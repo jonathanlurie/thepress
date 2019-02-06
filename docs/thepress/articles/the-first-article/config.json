@@ -1,0 +1,9 @@
+{
+  "title": "The First Article",
+  "author": "Jonathan Lurie",
+  "date": "2018-01-27",
+  "tags": "howto, tutorial, article",
+  "excerpt": "This is the content of the first article, not a very interesting one but still",
+  "cover": "some-cover.jpg",
+  "published": true
+}
