@@ -24,6 +24,14 @@ class ThePress extends EventManager{
 
   _init () {
     this._articleCollection = new ArticleCollection()
+
+    // the first page of articles should be loaded
+    this._articleCollection.on('ready', function(articles) {
+      console.log(articles)
+
+      articles[0].loadContent()
+
+    })
   }
 
 }

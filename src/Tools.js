@@ -36,4 +36,35 @@ function fetchJson (urls, cb) {
 
 
 
-export { fetchJson }
+function fetchText(urls, cb) {
+
+  if (typeof cb !== 'function') {
+    throw 'The callback provided must be a function'
+  }
+
+  // if a single url is provided, we make it an array
+  if (typeof urls === 'string') {
+    urls = [urls]
+  }
+
+  // separate function to make code more clear
+  const grabContent = url => fetch(url)
+    .then(res => res.text())
+    .catch(function(error) {
+      return null
+    })
+
+  Promise
+  .all(urls.map(grabContent))
+  .then(function(res){
+    if (urls.length === 1) {
+      cb(urls[0], res[0])
+    } else {
+      cb(urls, res)
+    }
+  })
+}
+
+
+
+export { fetchJson, fetchText }
