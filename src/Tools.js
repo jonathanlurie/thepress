@@ -66,9 +66,31 @@ function fetchText(urls, cb) {
 }
 
 
-function pathJoin(parts, separator = '/'){
+function pathJoin_ORIG(parts, separator = '/'){
    let replace   = new RegExp(separator+'{1,}', 'g');
    return parts.join(separator).replace(replace, separator);
+}
+
+
+function pathJoin (parts, separator = '/') {
+  let cleanParts = []
+
+  for (let i=0; i<parts.length; i++) {
+    let part = parts[i]
+    if (i > 0) {
+      if (part[0] === separator) {
+        part = part.substring(1)
+      }
+    }
+
+    if (part[part.length - 1] === separator) {
+      part = part.substring(0, part.length - 1)
+    }
+
+    cleanParts.push(part)
+  }
+
+  return cleanParts.join(separator)
 }
 
 
@@ -88,6 +110,7 @@ function getAbsoluteURL (path) {
     return pathJoin([getURL(), path])
   }
 }
+
 
 
 export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL }

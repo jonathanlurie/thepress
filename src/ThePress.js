@@ -1,5 +1,5 @@
 import EventManager from './EventManager'
-import { fetchJson } from './Tools'
+import { fetchJson, getURL, getAbsoluteURL } from './Tools'
 import { setMainConfig } from './Config'
 import ArticleCollection from './ArticleCollection'
 
@@ -8,11 +8,16 @@ class ThePress extends EventManager{
 
   constructor () {
     super()
+
+    console.log(getAbsoluteURL('config.json'))
+    console.log(getURL())
+    console.log(window.location)
+
     let that = this
     this._articleCollection = null
 
 
-    fetchJson('./config.json', function(url, data){
+    fetchJson(getAbsoluteURL('config.json'), function(url, data){
       if (!data)
         throw 'The config file is not available'
 

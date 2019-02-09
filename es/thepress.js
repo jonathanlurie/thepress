@@ -109,9 +109,43 @@ function fetchText(urls, cb) {
 }
 
 
-function pathJoin(parts, separator = '/'){
-   let replace   = new RegExp(separator+'{1,}', 'g');
-   return parts.join(separator).replace(replace, separator);
+function pathJoin (parts, separator = '/') {
+  let cleanParts = [];
+
+  for (let i=0; i<parts.length; i++) {
+    let part = parts[i];
+    if (i > 0) {
+      if (part[0] === separator) {
+        part = part.substring(1);
+      }
+    }
+
+    if (part[part.length - 1] === separator) {
+      part = part.substring(0, part.length - 1);
+    }
+
+    cleanParts.push(part);
+  }
+
+  return cleanParts.join(separator)
+}
+
+
+/**
+ * Get the URL without the #hash
+ * @return {String} the curent URL
+ */
+function getURL () {
+  return location.protocol+'//'+location.host+location.pathname
+}
+
+
+function getAbsoluteURL (path) {
+  if (path.startsWith('http')) {
+    return path
+  } else {
+    return pathJoin([getURL(), path])
+  }
 }
 
 let mainConfig = null;
@@ -129,7 +163,7 @@ class Article extends EventManager {
   constructor (id) {
     super();
     this._mainConfig = getMainConfig();
-    this._folderURL = pathJoin([this._mainConfig.content.articleDir, id ]);
+    this._folderURL = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, id ]));
     this._markdownURL = pathJoin([this._folderURL, "index.md"]);
     this._configURL = pathJoin([this._folderURL, "config.json"]);
 
@@ -286,7 +320,7 @@ class ArticleCollection extends EventManager {
     this._articlesList = [];
     this._articlesIndex = {};
 
-    let pathToArticleList = pathJoin([this._mainConfig.content.articleDir, 'list.json']);
+    let pathToArticleList = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, 'list.json']));
 
     fetchJson(pathToArticleList, function(url, articleList){
       if (!articleList)
@@ -331,7 +365,7 @@ class ArticleCollection extends EventManager {
       return cb(articles)
     }
 
-    let articlesUrls = noConfArticles.map(article => article.getConfigURL());
+    let articlesUrls = noConfArticles.map(article => getAbsoluteURL(article.getConfigURL()));
     //console.log(articlesUrls)
 
     fetchJson(articlesUrls, function(url, configs){
@@ -365,11 +399,16 @@ class ThePress extends EventManager{
 
   constructor () {
     super();
+
+    console.log(getAbsoluteURL('config.json'));
+    console.log(getURL());
+    console.log(window.location);
+
     let that = this;
     this._articleCollection = null;
 
 
-    fetchJson('./config.json', function(url, data){
+    fetchJson(getAbsoluteURL('config.json'), function(url, data){
       if (!data)
         throw 'The config file is not available'
 

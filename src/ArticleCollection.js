@@ -1,6 +1,6 @@
 import EventManager from './EventManager'
 import { getMainConfig } from './Config'
-import { fetchJson, pathJoin } from './Tools'
+import { fetchJson, pathJoin, getAbsoluteURL } from './Tools'
 import Article from './Article'
 
 
@@ -13,7 +13,7 @@ class ArticleCollection extends EventManager {
     this._articlesList = []
     this._articlesIndex = {}
 
-    let pathToArticleList = pathJoin([this._mainConfig.content.articleDir, 'list.json'])
+    let pathToArticleList = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, 'list.json']))
 
     fetchJson(pathToArticleList, function(url, articleList){
       if (!articleList)
@@ -58,7 +58,7 @@ class ArticleCollection extends EventManager {
       return cb(articles)
     }
 
-    let articlesUrls = noConfArticles.map(article => article.getConfigURL())
+    let articlesUrls = noConfArticles.map(article => getAbsoluteURL(article.getConfigURL()))
     //console.log(articlesUrls)
 
     fetchJson(articlesUrls, function(url, configs){

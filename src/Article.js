@@ -1,5 +1,5 @@
 import EventManager from './EventManager'
-import { fetchText, pathJoin } from './Tools'
+import { fetchText, pathJoin, getAbsoluteURL } from './Tools'
 import { getMainConfig } from './Config'
 
 class Article extends EventManager {
@@ -7,7 +7,7 @@ class Article extends EventManager {
   constructor (id) {
     super()
     this._mainConfig = getMainConfig()
-    this._folderURL = pathJoin([this._mainConfig.content.articleDir, id ])
+    this._folderURL = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, id ]))
     this._markdownURL = pathJoin([this._folderURL, "index.md"])
     this._configURL = pathJoin([this._folderURL, "config.json"])
 
