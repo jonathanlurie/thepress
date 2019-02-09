@@ -22,6 +22,7 @@ class ThePress extends EventManager{
 
   }
 
+
   _init () {
     this._articleCollection = new ArticleCollection()
 

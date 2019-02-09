@@ -1,6 +1,6 @@
 import EventManager from './EventManager'
 import { getMainConfig } from './Config'
-import { fetchJson } from './Tools'
+import { fetchJson, pathJoin } from './Tools'
 import Article from './Article'
 
 
@@ -13,7 +13,7 @@ class ArticleCollection extends EventManager {
     this._articlesList = []
     this._articlesIndex = {}
 
-    let pathToArticleList = this._mainConfig.content.articleDir + 'list.json'
+    let pathToArticleList = pathJoin([this._mainConfig.content.articleDir, 'list.json'])
 
     fetchJson(pathToArticleList, function(url, articleList){
       if (!articleList)

@@ -3,13 +3,13 @@
     "title": "The Press",
     "subtitle": "The most dynamic of static site generators",
     "author": "Jonathan Lurie",
-    "logo": "./assets/logo.png",
-    "cover": "./assets/cover_2000.jpg"
+    "logo": "assets/logo.png",
+    "cover": "assets/cover_2000.jpg"
   },
 
   "content":{
-    "pageDir": "./pages/",
-    "articleDir": "./articles/",
+    "pageDir": "pages",
+    "articleDir": "articles",
     "articlesPerPage": 10
   }
 }

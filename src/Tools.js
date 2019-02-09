@@ -66,5 +66,28 @@ function fetchText(urls, cb) {
 }
 
 
+function pathJoin(parts, separator = '/'){
+   let replace   = new RegExp(separator+'{1,}', 'g');
+   return parts.join(separator).replace(replace, separator);
+}
 
-export { fetchJson, fetchText }
+
+/**
+ * Get the URL without the #hash
+ * @return {String} the curent URL
+ */
+function getURL () {
+  return location.protocol+'//'+location.host+location.pathname
+}
+
+
+function getAbsoluteURL (path) {
+  if (path.startsWith('http')) {
+    return path
+  } else {
+    return pathJoin([getURL(), path])
+  }
+}
+
+
+export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL }

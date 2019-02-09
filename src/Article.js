@@ -1,5 +1,5 @@
 import EventManager from './EventManager'
-import { fetchText } from './Tools'
+import { fetchText, pathJoin } from './Tools'
 import { getMainConfig } from './Config'
 
 class Article extends EventManager {
@@ -7,9 +7,9 @@ class Article extends EventManager {
   constructor (id) {
     super()
     this._mainConfig = getMainConfig()
-    this._folderURL = this._mainConfig.content.articleDir + id + "/"
-    this._markdownURL = this._folderURL + "index.md"
-    this._configURL = this._folderURL + "config.json"
+    this._folderURL = pathJoin([this._mainConfig.content.articleDir, id ])
+    this._markdownURL = pathJoin([this._folderURL, "index.md"])
+    this._configURL = pathJoin([this._folderURL, "config.json"])
 
     this._id = id
     this._configLoaded = false
@@ -68,7 +68,14 @@ class Article extends EventManager {
 
   // TODO resolve for relative path
   setCover (c) {
-    this._cover = c
+    if (c.startsWith('http')) {
+      this._cover = c
+    } else {
+      this._cover = pathJoin([this._folderURL, c])
+    }
+
+    console.log(this._cover);
+
   }
 
 
@@ -126,6 +133,7 @@ class Article extends EventManager {
 
 
   loadContent (cb) {
+    console.log(this)
 
     if (this._htmlContent && typeof cb === 'function') {
       return cb(this)

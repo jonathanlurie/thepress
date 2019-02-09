@@ -108,6 +108,12 @@ function fetchText(urls, cb) {
   });
 }
 
+
+function pathJoin(parts, separator = '/'){
+   let replace   = new RegExp(separator+'{1,}', 'g');
+   return parts.join(separator).replace(replace, separator);
+}
+
 let mainConfig = null;
 
 function setMainConfig (data) {
@@ -123,9 +129,9 @@ class Article extends EventManager {
   constructor (id) {
     super();
     this._mainConfig = getMainConfig();
-    this._folderURL = this._mainConfig.content.articleDir + id + "/";
-    this._markdownURL = this._folderURL + "index.md";
-    this._configURL = this._folderURL + "config.json";
+    this._folderURL = pathJoin([this._mainConfig.content.articleDir, id ]);
+    this._markdownURL = pathJoin([this._folderURL, "index.md"]);
+    this._configURL = pathJoin([this._folderURL, "config.json"]);
 
     this._id = id;
     this._configLoaded = false;
@@ -184,7 +190,14 @@ class Article extends EventManager {
 
   // TODO resolve for relative path
   setCover (c) {
-    this._cover = c;
+    if (c.startsWith('http')) {
+      this._cover = c;
+    } else {
+      this._cover = pathJoin([this._folderURL, c]);
+    }
+
+    console.log(this._cover);
+
   }
 
 
@@ -242,6 +255,7 @@ class Article extends EventManager {
 
 
   loadContent (cb) {
+    console.log(this);
 
     if (this._htmlContent && typeof cb === 'function') {
       return cb(this)
@@ -272,7 +286,7 @@ class ArticleCollection extends EventManager {
     this._articlesList = [];
     this._articlesIndex = {};
 
-    let pathToArticleList = this._mainConfig.content.articleDir + 'list.json';
+    let pathToArticleList = pathJoin([this._mainConfig.content.articleDir, 'list.json']);
 
     fetchJson(pathToArticleList, function(url, articleList){
       if (!articleList)
@@ -364,6 +378,7 @@ class ThePress extends EventManager{
     });
 
   }
+
 
   _init () {
     this._articleCollection = new ArticleCollection();
