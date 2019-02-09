@@ -112,5 +112,20 @@ function getAbsoluteURL (path) {
 }
 
 
+/**
+ * Change the relative path to prepend some prefix. Image URL starting with http
+ * are not modified
+ */
+function markdownReplaceImageURL (md, prefix) {
+  let mdMod = md.replace(/\!\[[a-zA-Z0-9 ]*\]\(\s*(\S*)\s*\)/gm, function(correspondance, p1){
+    if (p1.startsWith('http')) {
+      return correspondance
+    } else {
+      return correspondance.replace(p1, pathJoin([prefix, p1])) 
+    }
+  })
+  return mdMod
+}
 
-export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL }
+
+export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL, markdownReplaceImageURL }

@@ -1,6 +1,7 @@
 import EventManager from './EventManager'
-import { fetchText, pathJoin, getAbsoluteURL } from './Tools'
+import { fetchText, pathJoin, getAbsoluteURL, markdownReplaceImageURL } from './Tools'
 import { getMainConfig } from './Config'
+import md2html from './md2html'
 
 class Article extends EventManager {
 
@@ -73,9 +74,6 @@ class Article extends EventManager {
     } else {
       this._cover = pathJoin([this._folderURL, c])
     }
-
-    console.log(this._cover);
-
   }
 
 
@@ -85,7 +83,8 @@ class Article extends EventManager {
 
 
   setMarkdownContent (md) {
-    this._markdownContent = md
+    this._markdownContent = markdownReplaceImageURL(md, this._folderURL)
+    this._htmlContent = md2html(this._markdownContent)
   }
 
   getTitle () {
@@ -133,19 +132,17 @@ class Article extends EventManager {
 
 
   loadContent (cb) {
-    console.log(this)
+    let that = this
 
     if (this._htmlContent && typeof cb === 'function') {
       return cb(this)
     }
 
-    fetchText( this._markdownURL, function(url, data) {
-      if (!data)
+    fetchText( this._markdownURL, function(url, text) {
+      if (!text)
         throw 'The article at ' + url + 'could not be loaded'
 
-      console.log(data)
-
-      // TODO convert md to html
+      that.setMarkdownContent(text)
 
       if (typeof cb === 'function') {
         return cb(this)
