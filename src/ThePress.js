@@ -43,7 +43,19 @@ class ThePress extends EventManager{
 
   _defineRoutingEvent () {
     this._routeManager.on('home', function(){
-      console.log('Going to homepage')
+      console.log('GOTO: home')
+    })
+
+    this._routeManager.on('articleListing', function(listIndex){
+      console.log('GOTO articleListing: ' + listIndex)
+    })
+
+    this._routeManager.on('specificArticle', function(articleId){
+      console.log('GOTO article: ' + articleId)
+    })
+
+    this._routeManager.on('specificPage', function(pageId){
+      console.log('GOTO page: ' + pageId)
     })
   }
 
