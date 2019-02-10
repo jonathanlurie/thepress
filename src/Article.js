@@ -1,5 +1,5 @@
 import EventManager from './EventManager'
-import { fetchText, pathJoin, getAbsoluteURL, markdownReplaceImageURL } from './Tools'
+import { fetchJson, fetchText, pathJoin, getAbsoluteURL, markdownReplaceImageURL } from './Tools'
 import { getMainConfig } from './Config'
 import md2html from './md2html'
 
@@ -7,8 +7,7 @@ class Article extends EventManager {
 
   constructor (id) {
     super()
-    this._mainConfig = getMainConfig()
-    this._folderURL = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, id ]))
+    this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, id ]))
     this._markdownURL = pathJoin([this._folderURL, "index.md"])
     this._configURL = pathJoin([this._folderURL, "config.json"])
 
@@ -25,9 +24,6 @@ class Article extends EventManager {
     this._htmlContent = null
   }
 
-  confirmConfigLoaded () {
-    this._configLoaded = true
-  }
 
   isConfigLoaded () {
     return this._configLoaded
@@ -43,49 +39,30 @@ class Article extends EventManager {
     return this._configURL
   }
 
-  setTitle (t) {
-    this._title = t
-  }
 
-  setAuthor (a) {
-    this._author = a
-  }
+  setConfig (config) {
+    this._author = config.author
+    this._date = config.date
 
-
-  setDate (d) {
-    this._date = d
-  }
-
-
-  setTags (tags) {
-    this._tags = tags
-  }
-
-
-  setExcerpt (e) {
-    this._excerpt = e
-  }
-
-
-  // TODO resolve for relative path
-  setCover (c) {
-    if (c.startsWith('http')) {
-      this._cover = c
+    if (config.cover.startsWith('http')) {
+      this._cover = config.cover
     } else {
-      this._cover = pathJoin([this._folderURL, c])
+      this._cover = pathJoin([this._folderURL, config.cover])
     }
+
+    this._excerpt = config.excerpt
+    this._title = config.title
+    this._published = config.published
+    this._tags = config.tags.split(',').map(t=> t.trim())
+    this._configLoaded = true
   }
 
 
-  setPublished (p) {
-    this._published = p
-  }
-
-
-  setMarkdownContent (md) {
+  _setMarkdownContent (md) {
     this._markdownContent = markdownReplaceImageURL(md, this._folderURL)
     this._htmlContent = md2html(this._markdownContent)
   }
+
 
   getTitle () {
     return this._title
@@ -126,11 +103,6 @@ class Article extends EventManager {
   }
 
 
-  _convertMardownToHTML () {
-    // TODO
-  }
-
-
   loadContent (cb) {
     let that = this
 
@@ -138,14 +110,27 @@ class Article extends EventManager {
       return cb(this)
     }
 
+    // must test if the config is loaded
+    if (!this._configLoaded) {
+      fetchJson( [this.getConfigURL()], function(url, configs){
+        let config = configs[0]
+        if (!config)
+          throw 'The config for the article ' + that._id + ' is not available.'
+
+        that.setConfig(config)
+        that.loadContent(cb)
+      })
+    }
+
+
     fetchText( this._markdownURL, function(url, text) {
       if (!text)
         throw 'The article at ' + url + 'could not be loaded'
 
-      that.setMarkdownContent(text)
+      that._setMarkdownContent(text)
 
       if (typeof cb === 'function') {
-        return cb(this)
+        return cb(that)
       }
     })
   }

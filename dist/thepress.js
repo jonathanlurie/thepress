@@ -60,11 +60,6 @@
       throw 'The callback provided must be a function'
     }
 
-    // if a single url is provided, we make it an array
-    if (typeof urls === 'string') {
-      urls = [urls];
-    }
-
     // separate function to make code more clear
     const grabContent = url => fetch(url)
       .then(res => res.json())
@@ -75,11 +70,7 @@
     Promise
     .all(urls.map(grabContent))
     .then(function(res){
-      if (urls.length === 1) {
-        cb(urls[0], res[0]);
-      } else {
-        cb(urls, res);
-      }
+      cb(urls, res);
     });
   }
 
@@ -164,7 +155,7 @@
       if (p1.startsWith('http')) {
         return correspondance
       } else {
-        return correspondance.replace(p1, pathJoin([prefix, p1])) 
+        return correspondance.replace(p1, pathJoin([prefix, p1]))
       }
     });
     return mdMod
@@ -7929,8 +7920,7 @@
 
     constructor (id) {
       super();
-      this._mainConfig = getMainConfig();
-      this._folderURL = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, id ]));
+      this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, id ]));
       this._markdownURL = pathJoin([this._folderURL, "index.md"]);
       this._configURL = pathJoin([this._folderURL, "config.json"]);
 
@@ -7947,9 +7937,6 @@
       this._htmlContent = null;
     }
 
-    confirmConfigLoaded () {
-      this._configLoaded = true;
-    }
 
     isConfigLoaded () {
       return this._configLoaded
@@ -7965,49 +7952,30 @@
       return this._configURL
     }
 
-    setTitle (t) {
-      this._title = t;
-    }
 
-    setAuthor (a) {
-      this._author = a;
-    }
+    setConfig (config) {
+      this._author = config.author;
+      this._date = config.date;
 
-
-    setDate (d) {
-      this._date = d;
-    }
-
-
-    setTags (tags) {
-      this._tags = tags;
-    }
-
-
-    setExcerpt (e) {
-      this._excerpt = e;
-    }
-
-
-    // TODO resolve for relative path
-    setCover (c) {
-      if (c.startsWith('http')) {
-        this._cover = c;
+      if (config.cover.startsWith('http')) {
+        this._cover = config.cover;
       } else {
-        this._cover = pathJoin([this._folderURL, c]);
+        this._cover = pathJoin([this._folderURL, config.cover]);
       }
+
+      this._excerpt = config.excerpt;
+      this._title = config.title;
+      this._published = config.published;
+      this._tags = config.tags.split(',').map(t=> t.trim());
+      this._configLoaded = true;
     }
 
 
-    setPublished (p) {
-      this._published = p;
-    }
-
-
-    setMarkdownContent (md) {
+    _setMarkdownContent (md) {
       this._markdownContent = markdownReplaceImageURL(md, this._folderURL);
       this._htmlContent = md2html(this._markdownContent);
     }
+
 
     getTitle () {
       return this._title
@@ -8048,11 +8016,6 @@
     }
 
 
-    _convertMardownToHTML () {
-      // TODO
-    }
-
-
     loadContent (cb) {
       let that = this;
 
@@ -8060,14 +8023,27 @@
         return cb(this)
       }
 
+      // must test if the config is loaded
+      if (!this._configLoaded) {
+        fetchJson( [this.getConfigURL()], function(url, configs){
+          let config = configs[0];
+          if (!config)
+            throw 'The config for the article ' + that._id + ' is not available.'
+
+          that.setConfig(config);
+          that.loadContent(cb);
+        });
+      }
+
+
       fetchText( this._markdownURL, function(url, text) {
         if (!text)
           throw 'The article at ' + url + 'could not be loaded'
 
-        that.setMarkdownContent(text);
+        that._setMarkdownContent(text);
 
         if (typeof cb === 'function') {
-          return cb(this)
+          return cb(that)
         }
       });
     }
@@ -8078,14 +8054,13 @@
     constructor() {
       super();
       let that = this;
-      this._mainConfig = getMainConfig();
-
       this._articlesList = [];
       this._articlesIndex = {};
 
-      let pathToArticleList = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, 'list.json']));
+      let pathToArticleList = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, 'list.json']));
 
-      fetchJson(pathToArticleList, function(url, articleList){
+      fetchJson([pathToArticleList], function(url, articleLists){
+        let articleList = articleLists[0];
         if (!articleList)
           throw 'The list of articles is not available'
 
@@ -8112,7 +8087,7 @@
       if (from < 0)
         throw 'The index of article must be above 0.'
 
-      let to = Math.min(from + this._mainConfig.content.articlesPerPage, this._articlesList.length);
+      let to = Math.min(from + getMainConfig().content.articlesPerPage, this._articlesList.length);
       let shortIdList = this._articlesList.slice(from, to);
       this.loadArticlesConfigSubset(shortIdList, cb);
     }
@@ -8128,7 +8103,7 @@
         return cb(articles)
       }
 
-      let articlesUrls = noConfArticles.map(article => getAbsoluteURL(article.getConfigURL()));
+      let articlesUrls = noConfArticles.map(article => article.getConfigURL());
       //console.log(articlesUrls)
 
       fetchJson(articlesUrls, function(url, configs){
@@ -8136,14 +8111,7 @@
           throw 'The list of articles is not available'
 
         for (let i=0; i<noConfArticles.length; i++) {
-          noConfArticles[i].setAuthor(configs[i].author);
-          noConfArticles[i].setDate(configs[i].date);
-          noConfArticles[i].setCover(configs[i].cover);
-          noConfArticles[i].setExcerpt(configs[i].excerpt);
-          noConfArticles[i].setTitle(configs[i].title);
-          noConfArticles[i].setPublished(configs[i].published);
-          noConfArticles[i].setTags(configs[i].tags.split(',').map(t=> t.trim()));
-          noConfArticles[i].confirmConfigLoaded();
+          noConfArticles[i].setConfig(configs[i]);
         }
 
         if (typeof cb === 'function') {
@@ -8154,6 +8122,176 @@
 
 
 
+
+
+  }
+
+  class Page extends EventManager {
+
+    constructor (id) {
+      super();
+
+      this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.pageDir, id ]));
+      this._markdownURL = pathJoin([this._folderURL, "index.md"]);
+      this._configURL = pathJoin([this._folderURL, "config.json"]);
+
+      this._id = id;
+      this._configLoaded = false;
+      this._title = null;
+      this._cover = null;
+      this._showInMenu = false;
+      this._markdownContent = null;
+      this._htmlContent = null;
+    }
+
+
+    isConfigLoaded () {
+      return this._configLoaded
+    }
+
+
+    setConfig (config) {
+      if (config.cover.startsWith('http')) {
+        this._cover = config.cover;
+      } else {
+        this._cover = pathJoin([this._folderURL, config.cover]);
+      }
+
+      this._title = config.title;
+      this._showInMenu = config.showInMenu;
+      this._configLoaded = true;
+    }
+
+
+    getMarkdownURL () {
+      return this._markdownURL
+    }
+
+
+    getConfigURL () {
+      return this._configURL
+    }
+
+
+    _setMarkdownContent (md) {
+      this._markdownContent = markdownReplaceImageURL(md, this._folderURL);
+      this._htmlContent = md2html(this._markdownContent);
+    }
+
+
+    isLoaded () {
+      return !!this._htmlContent
+    }
+
+
+    getTitle () {
+      return this._title
+    }
+
+
+    getCover () {
+      return this._cover
+    }
+
+
+    getShowInMenu () {
+      return this._showInMenu
+    }
+
+
+    getMarkdownContent () {
+      return this._markdownContent
+    }
+
+
+    loadContent (cb) {
+      let that = this;
+
+      if (this._htmlContent && typeof cb === 'function') {
+        return cb(this)
+      }
+
+      fetchText( this._markdownURL, function(url, text) {
+        if (!text)
+          throw 'The page at ' + url + 'could not be loaded'
+
+        that._setMarkdownContent(text);
+
+        if (typeof cb === 'function') {
+          return cb(that)
+        }
+      });
+    }
+
+  }
+
+  class PageCollection extends EventManager {
+    constructor() {
+      super();
+      let that = this;
+      this._pageList = [];
+      this._pagesIndex = {};
+
+      let pathToPageList = getAbsoluteURL(pathJoin([getMainConfig().content.pageDir, 'list.json']));
+
+      fetchJson([pathToPageList], function(url, pageLists){
+        let pageList = pageLists[0];
+        if (!pageList)
+          throw 'The list of pages is not available'
+
+        pageList.map( pageId => that.addPage(pageId));
+
+        // Load the first page of pages
+        that.loadPagesConfig(function(pages){
+          that.emit('ready', [pages]);
+        });
+      });
+    }
+
+
+    addPage (id) {
+      if (!(id in this._pagesIndex)) {
+        let page = new Page(id);
+        this._pageList.push(page);
+        this._pagesIndex[id] = page;
+      }
+    }
+
+
+    loadPagesConfig (cb) {
+      let pages = this._pageList;
+      let pagesUrls = pages.map(page => getAbsoluteURL(page.getConfigURL()));
+
+      fetchJson(pagesUrls, function(url, configs){
+        if (!configs)
+          throw 'The list of pages is not available'
+
+        for (let i=0; i<pages.length; i++) {
+          pages[i].setConfig(configs[i]);
+        }
+
+        if (typeof cb === 'function') {
+          cb(pages);
+        }
+      });
+    }
+
+
+    getPage (id, cb) {
+      if (!(id in this._pagesIndex))
+        throw 'The page ' + id + ' does not exist.'
+
+      if (typeof cb !== 'function')
+        throw 'The callback must be a function'
+
+      let page = this._pagesIndex[id];
+
+      if (page.isLoaded()) {
+        return cb(page)
+      } else {
+        page.loadContent(cb);
+      }
+    }
 
 
   }
@@ -8224,7 +8362,6 @@
       // route is of form #my-page
       // --> we want the page my-page
       match = route.match(REGEX.SPECIFIC_PAGE);
-      console.log(match);
       if(match) {
         this.emit('specificPage', [route]);
         return
@@ -8240,12 +8377,13 @@
       super();
       let that = this;
       this._articleCollection = null;
+      this._pageCollection = null;
 
-      fetchJson(getAbsoluteURL('config.json'), function(url, data){
-        if (!data)
+      fetchJson([getAbsoluteURL('config.json')], function(url, data){
+        if (!data[0])
           throw 'The config file is not available'
 
-        setMainConfig(data);
+        setMainConfig(data[0]);
         that._init();
       });
 
@@ -8256,17 +8394,29 @@
 
     _init () {
       let that = this;
-      this._articleCollection = new ArticleCollection();
 
+      this._articleCollection = new ArticleCollection();
+      console.log(this._articleCollection);
       // the first page of articles should be loaded
       this._articleCollection.on('ready', function(articles) {
-
+        console.log(articles);
         //articles[1].loadContent()
-
         // the routing must be the firt thing to go when listing is read`
         that._routeManager.init();
+      });
+
+
+      this._pageCollection = new PageCollection();
+      console.log(this._pageCollection);
+      // the first page of articles should be loaded
+      this._pageCollection.on('ready', function(pages) {
+        console.log(pages);
+        //pages[1].loadContent()
+        // the routing must be the firt thing to go when listing is read`
+        //that._routeManager.init()
 
       });
+
     }
 
 
@@ -8286,6 +8436,11 @@
       this._routeManager.on('specificPage', function(pageId){
         console.log('GOTO page: ' + pageId);
       });
+    }
+
+
+    _checkIsReady () {
+
     }
 
   }

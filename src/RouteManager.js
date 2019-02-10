@@ -66,7 +66,6 @@ class RouteManager extends EventManager {
     // route is of form #my-page
     // --> we want the page my-page
     match = route.match(REGEX.SPECIFIC_PAGE)
-    console.log(match)
     if(match) {
       this.emit('specificPage', [route])
       return

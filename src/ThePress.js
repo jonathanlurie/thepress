@@ -2,6 +2,7 @@ import EventManager from './EventManager'
 import { fetchJson, getURL, getAbsoluteURL } from './Tools'
 import { setMainConfig } from './Config'
 import ArticleCollection from './ArticleCollection'
+import PageCollection from './PageCollection'
 import RouteManager from './RouteManager'
 
 
@@ -11,12 +12,13 @@ class ThePress extends EventManager{
     super()
     let that = this
     this._articleCollection = null
+    this._pageCollection = null
 
-    fetchJson(getAbsoluteURL('config.json'), function(url, data){
-      if (!data)
+    fetchJson([getAbsoluteURL('config.json')], function(url, data){
+      if (!data[0])
         throw 'The config file is not available'
 
-      setMainConfig(data)
+      setMainConfig(data[0])
       that._init()
     })
 
@@ -27,17 +29,29 @@ class ThePress extends EventManager{
 
   _init () {
     let that = this
-    this._articleCollection = new ArticleCollection()
 
+    this._articleCollection = new ArticleCollection()
+    console.log(this._articleCollection)
     // the first page of articles should be loaded
     this._articleCollection.on('ready', function(articles) {
-
+      console.log(articles)
       //articles[1].loadContent()
-
       // the routing must be the firt thing to go when listing is read`
       that._routeManager.init()
+    })
+
+
+    this._pageCollection = new PageCollection()
+    console.log(this._pageCollection)
+    // the first page of articles should be loaded
+    this._pageCollection.on('ready', function(pages) {
+      console.log(pages)
+      //pages[1].loadContent()
+      // the routing must be the firt thing to go when listing is read`
+      //that._routeManager.init()
 
     })
+
   }
 
 
@@ -57,6 +71,11 @@ class ThePress extends EventManager{
     this._routeManager.on('specificPage', function(pageId){
       console.log('GOTO page: ' + pageId)
     })
+  }
+
+
+  _checkIsReady () {
+
   }
 
 }

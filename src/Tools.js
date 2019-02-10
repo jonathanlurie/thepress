@@ -11,11 +11,6 @@ function fetchJson (urls, cb) {
     throw 'The callback provided must be a function'
   }
 
-  // if a single url is provided, we make it an array
-  if (typeof urls === 'string') {
-    urls = [urls]
-  }
-
   // separate function to make code more clear
   const grabContent = url => fetch(url)
     .then(res => res.json())
@@ -26,11 +21,7 @@ function fetchJson (urls, cb) {
   Promise
   .all(urls.map(grabContent))
   .then(function(res){
-    if (urls.length === 1) {
-      cb(urls[0], res[0])
-    } else {
-      cb(urls, res)
-    }
+    cb(urls, res)
   })
 }
 
@@ -121,7 +112,7 @@ function markdownReplaceImageURL (md, prefix) {
     if (p1.startsWith('http')) {
       return correspondance
     } else {
-      return correspondance.replace(p1, pathJoin([prefix, p1])) 
+      return correspondance.replace(p1, pathJoin([prefix, p1]))
     }
   })
   return mdMod

@@ -8,14 +8,13 @@ class ArticleCollection extends EventManager {
   constructor() {
     super()
     let that = this
-    this._mainConfig = getMainConfig()
-
     this._articlesList = []
     this._articlesIndex = {}
 
-    let pathToArticleList = getAbsoluteURL(pathJoin([this._mainConfig.content.articleDir, 'list.json']))
+    let pathToArticleList = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, 'list.json']))
 
-    fetchJson(pathToArticleList, function(url, articleList){
+    fetchJson([pathToArticleList], function(url, articleLists){
+      let articleList = articleLists[0]
       if (!articleList)
         throw 'The list of articles is not available'
 
@@ -42,7 +41,7 @@ class ArticleCollection extends EventManager {
     if (from < 0)
       throw 'The index of article must be above 0.'
 
-    let to = Math.min(from + this._mainConfig.content.articlesPerPage, this._articlesList.length)
+    let to = Math.min(from + getMainConfig().content.articlesPerPage, this._articlesList.length)
     let shortIdList = this._articlesList.slice(from, to)
     this.loadArticlesConfigSubset(shortIdList, cb)
   }
@@ -58,7 +57,7 @@ class ArticleCollection extends EventManager {
       return cb(articles)
     }
 
-    let articlesUrls = noConfArticles.map(article => getAbsoluteURL(article.getConfigURL()))
+    let articlesUrls = noConfArticles.map(article => article.getConfigURL())
     //console.log(articlesUrls)
 
     fetchJson(articlesUrls, function(url, configs){
@@ -66,14 +65,7 @@ class ArticleCollection extends EventManager {
         throw 'The list of articles is not available'
 
       for (let i=0; i<noConfArticles.length; i++) {
-        noConfArticles[i].setAuthor(configs[i].author)
-        noConfArticles[i].setDate(configs[i].date)
-        noConfArticles[i].setCover(configs[i].cover)
-        noConfArticles[i].setExcerpt(configs[i].excerpt)
-        noConfArticles[i].setTitle(configs[i].title)
-        noConfArticles[i].setPublished(configs[i].published)
-        noConfArticles[i].setTags(configs[i].tags.split(',').map(t=> t.trim()))
-        noConfArticles[i].confirmConfigLoaded()
+        noConfArticles[i].setConfig(configs[i])
       }
 
       if (typeof cb === 'function') {
