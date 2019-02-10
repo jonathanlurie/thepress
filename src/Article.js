@@ -25,6 +25,7 @@ class Article extends EventManager {
   }
 
 
+
   isConfigLoaded () {
     return this._configLoaded
   }
@@ -120,19 +121,19 @@ class Article extends EventManager {
         that.setConfig(config)
         that.loadContent(cb)
       })
+    } else {
+
+      fetchText( this._markdownURL, function(url, text) {
+        if (!text)
+          throw 'The article at ' + url + 'could not be loaded'
+
+        that._setMarkdownContent(text)
+
+        if (typeof cb === 'function') {
+          return cb(that)
+        }
+      })
     }
-
-
-    fetchText( this._markdownURL, function(url, text) {
-      if (!text)
-        throw 'The article at ' + url + 'could not be loaded'
-
-      that._setMarkdownContent(text)
-
-      if (typeof cb === 'function') {
-        return cb(that)
-      }
-    })
   }
 
 }

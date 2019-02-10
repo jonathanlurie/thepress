@@ -7938,6 +7938,7 @@
     }
 
 
+
     isConfigLoaded () {
       return this._configLoaded
     }
@@ -8033,19 +8034,19 @@
           that.setConfig(config);
           that.loadContent(cb);
         });
+      } else {
+
+        fetchText( this._markdownURL, function(url, text) {
+          if (!text)
+            throw 'The article at ' + url + 'could not be loaded'
+
+          that._setMarkdownContent(text);
+
+          if (typeof cb === 'function') {
+            return cb(that)
+          }
+        });
       }
-
-
-      fetchText( this._markdownURL, function(url, text) {
-        if (!text)
-          throw 'The article at ' + url + 'could not be loaded'
-
-        that._setMarkdownContent(text);
-
-        if (typeof cb === 'function') {
-          return cb(that)
-        }
-      });
     }
 
   }
@@ -8054,6 +8055,7 @@
     constructor() {
       super();
       let that = this;
+      this._isReady = false;
       this._articlesList = [];
       this._articlesIndex = {};
 
@@ -8066,11 +8068,20 @@
 
         articleList.map( articleId => that.addArticle(articleId));
 
+        // unlike pages, we dont load article configs per default. This
+        // will be done on demand, dependading on the route
+        that._isReady = true;
+        that.emit('ready');
         // Load the first page of articles
-        that.loadArticlesConfigFromIndex(0, function(articles){
-          that.emit('ready', [articles]);
-        });
+        // that.loadArticlesConfigFromIndex(0, function(articles){
+        //   that.emit('ready', [articles])
+        // })
       });
+    }
+
+
+    isReady () {
+      return this._isReady
     }
 
 
@@ -8121,6 +8132,16 @@
     }
 
 
+    getArticle (id, cb) {
+      if (!(id in this._articlesIndex))
+        throw 'The article ' + id + ' does not exist.'
+
+      if (typeof cb !== 'function')
+        throw 'The callback must be a function'
+
+      let article = this._articlesIndex[id];
+      article.loadContent(cb);
+    }
 
 
 
@@ -8229,6 +8250,7 @@
     constructor() {
       super();
       let that = this;
+      this._isReady = false;
       this._pageList = [];
       this._pagesIndex = {};
 
@@ -8241,11 +8263,17 @@
 
         pageList.map( pageId => that.addPage(pageId));
 
-        // Load the first page of pages
+        // Load all the pages' config because we need that for the menu
         that.loadPagesConfig(function(pages){
+          that._isReady = true;
           that.emit('ready', [pages]);
         });
       });
+    }
+
+
+    isReady () {
+      return this._isReady
     }
 
 
@@ -8399,22 +8427,13 @@
       console.log(this._articleCollection);
       // the first page of articles should be loaded
       this._articleCollection.on('ready', function(articles) {
-        console.log(articles);
-        //articles[1].loadContent()
-        // the routing must be the firt thing to go when listing is read`
-        that._routeManager.init();
+        that._checkIsReady();
       });
-
 
       this._pageCollection = new PageCollection();
       console.log(this._pageCollection);
-      // the first page of articles should be loaded
       this._pageCollection.on('ready', function(pages) {
-        console.log(pages);
-        //pages[1].loadContent()
-        // the routing must be the firt thing to go when listing is read`
-        //that._routeManager.init()
-
+        that._checkIsReady();
       });
 
     }
@@ -8440,7 +8459,12 @@
 
 
     _checkIsReady () {
+      let isReady = this._pageCollection.isReady() && this._articleCollection.isReady();
 
+      if (!isReady)
+        return
+
+      this._routeManager.init();
     }
 
   }

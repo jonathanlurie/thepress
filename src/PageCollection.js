@@ -8,6 +8,7 @@ class PageCollection extends EventManager {
   constructor() {
     super()
     let that = this
+    this._isReady = false
     this._pageList = []
     this._pagesIndex = {}
 
@@ -20,11 +21,17 @@ class PageCollection extends EventManager {
 
       pageList.map( pageId => that.addPage(pageId))
 
-      // Load the first page of pages
+      // Load all the pages' config because we need that for the menu
       that.loadPagesConfig(function(pages){
+        that._isReady = true
         that.emit('ready', [pages])
       })
     })
+  }
+
+
+  isReady () {
+    return this._isReady
   }
 
 

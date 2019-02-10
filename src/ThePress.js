@@ -34,22 +34,13 @@ class ThePress extends EventManager{
     console.log(this._articleCollection)
     // the first page of articles should be loaded
     this._articleCollection.on('ready', function(articles) {
-      console.log(articles)
-      //articles[1].loadContent()
-      // the routing must be the firt thing to go when listing is read`
-      that._routeManager.init()
+      that._checkIsReady()
     })
-
 
     this._pageCollection = new PageCollection()
     console.log(this._pageCollection)
-    // the first page of articles should be loaded
     this._pageCollection.on('ready', function(pages) {
-      console.log(pages)
-      //pages[1].loadContent()
-      // the routing must be the firt thing to go when listing is read`
-      //that._routeManager.init()
-
+      that._checkIsReady()
     })
 
   }
@@ -75,7 +66,12 @@ class ThePress extends EventManager{
 
 
   _checkIsReady () {
+    let isReady = this._pageCollection.isReady() && this._articleCollection.isReady()
 
+    if (!isReady)
+      return
+
+    this._routeManager.init()
   }
 
 }

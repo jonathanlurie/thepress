@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "The Press",
-    "subtitle": "The most dynamic of static site generators",
+    "subtitle": "The static site non-generator",
     "author": "Jonathan Lurie",
     "logo": "assets/logo.png",
     "cover": "assets/cover_2000.jpg"
@@ -10,6 +10,6 @@
   "content":{
     "pageDir": "pages",
     "articleDir": "articles",
-    "articlesPerPage": 1
+    "articlesPerPage": 5
   }
 }

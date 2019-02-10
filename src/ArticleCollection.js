@@ -8,6 +8,7 @@ class ArticleCollection extends EventManager {
   constructor() {
     super()
     let that = this
+    this._isReady = false
     this._articlesList = []
     this._articlesIndex = {}
 
@@ -20,11 +21,20 @@ class ArticleCollection extends EventManager {
 
       articleList.map( articleId => that.addArticle(articleId))
 
+      // unlike pages, we dont load article configs per default. This
+      // will be done on demand, dependading on the route
+      that._isReady = true
+      that.emit('ready')
       // Load the first page of articles
-      that.loadArticlesConfigFromIndex(0, function(articles){
-        that.emit('ready', [articles])
-      })
+      // that.loadArticlesConfigFromIndex(0, function(articles){
+      //   that.emit('ready', [articles])
+      // })
     })
+  }
+
+
+  isReady () {
+    return this._isReady
   }
 
 
@@ -75,6 +85,16 @@ class ArticleCollection extends EventManager {
   }
 
 
+  getArticle (id, cb) {
+    if (!(id in this._articlesIndex))
+      throw 'The article ' + id + ' does not exist.'
+
+    if (typeof cb !== 'function')
+      throw 'The callback must be a function'
+
+    let article = this._articlesIndex[id]
+    article.loadContent(cb)
+  }
 
 
 
