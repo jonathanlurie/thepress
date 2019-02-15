@@ -1,3 +1,4 @@
 import ThePress from './ThePress'
 
-export default ({ThePress})
+new ThePress()
+//export default ({ThePress})

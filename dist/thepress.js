@@ -1,7 +1,7 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.thepress = factory());
+  (factory());
 }(this, (function () { 'use strict';
 
   /**
@@ -8469,9 +8469,8 @@
 
   }
 
-  var index = ({ThePress});
-
-  return index;
+  new ThePress();
+  //export default ({ThePress})
 
 })));
 //# sourceMappingURL=thepress.js.map

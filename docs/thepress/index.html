@@ -2,21 +2,25 @@
 <head>
   <title>The Press</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-</head>
-<body>
-  <!-- importing the automatically build module -->
-  <script src="../../dist/thepress.js"></script>
 
-  <!-- The minified version is also accessible -->
-  <!-- <script src="../dist/thepress.umd.min.js"></script> -->
-
-  <p>Open Javascript console.</p>
-
-  <script>
-
-    var tp = new thepress.ThePress()
-
+  <script id="thepress-template" type="text/x-handlebars-template">
+    hello
   </script>
 
+  <style>
+
+  body {
+    margin: 0;
+  }
+
+
+
+  </style>
+
+  <!-- MUST be the last thing in <head> -->
+  <script src="../../dist/thepress.js"></script>
+</head>
+<body>
+  fghjk
 </body>
 </html>

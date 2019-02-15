@@ -8463,7 +8463,6 @@ class ThePress extends EventManager{
 
 }
 
-var index = ({ThePress});
-
-export default index;
+new ThePress();
+//export default ({ThePress})
 //# sourceMappingURL=thepress.js.map
