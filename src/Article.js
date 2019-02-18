@@ -65,6 +65,18 @@ class Article extends EventManager {
   }
 
 
+  getMetadata () {
+    return {
+      id: this._id,
+      title: this._title,
+      author: this._author,
+      date: this._date,
+      tags: this._tags,
+      excerpt: this._excerpt,
+      cover: this._cover,
+    }
+  }
+
   getTitle () {
     return this._title
   }
@@ -103,6 +115,10 @@ class Article extends EventManager {
     return this._markdownContent
   }
 
+
+  getHtmlContent () {
+    return this._htmlContent
+  }
 
   loadContent (cb) {
     let that = this

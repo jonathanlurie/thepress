@@ -1,0 +1,84 @@
+import Handlebars from 'handlebars'
+import { getMainConfig } from './Config'
+const TEMPLATE_ID = 'thepress-template'
+
+/*
+  add string comparison in template language:
+  https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
+
+ */
+
+
+/**
+ * The builder is in charge of generating the graphical elements and inject
+ * them into the DOM
+ */
+class Builder {
+
+  constructor() {
+    this._articleCollection = null
+    this._pageCollection = null
+    this._template = Handlebars.compile(document.getElementById(TEMPLATE_ID).innerHTML)
+  }
+
+  setArticleCollection (ac) {
+    this._articleCollection = ac
+  }
+
+  setPageCollection (pc) {
+    this._pageCollection = pc
+  }
+
+  /**
+   * Remove all the non-<script> elements from document.body
+   */
+  flushNonScript() {
+    let bodyChildren = document.body.children
+    for (let i=0; i<bodyChildren.length; i++){
+      let el = bodyChildren[i]
+      if (el.tagName !== 'SCRIPT') {
+        document.body.removeChild(el)
+      }
+    }
+  }
+
+
+  /**
+   * Remove all the content of document.body
+   */
+  flushBody() {
+    while (document.body.firstChild) {
+        document.body.removeChild(document.body.firstChild);
+    }
+  }
+
+
+  buildArticle(id) {
+    let that = this
+    this._articleCollection.getArticle(id, function(article){
+      let articleData = {
+        metadata: article.getMetadata(),
+        content: article.getHtmlContent()
+      }
+      that._buildGenericPage(articleData)
+    })
+  }
+
+
+  _buildGenericPage(contentData) {
+    let allData = {
+      siteData: getMainConfig().site,
+      contentData: contentData
+    }
+
+    console.log(allData)
+
+    let htmlCorpus = this._template(allData)
+    this.flushBody()
+    document.body.innerHTML += htmlCorpus
+  }
+
+
+}
+
+export default Builder

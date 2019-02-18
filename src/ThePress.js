@@ -4,6 +4,7 @@ import { setMainConfig } from './Config'
 import ArticleCollection from './ArticleCollection'
 import PageCollection from './PageCollection'
 import RouteManager from './RouteManager'
+import Builder from './Builder'
 
 
 class ThePress extends EventManager{
@@ -13,6 +14,7 @@ class ThePress extends EventManager{
     let that = this
     this._articleCollection = null
     this._pageCollection = null
+    this._builder = new Builder()
 
     fetchJson([getAbsoluteURL('config.json')], function(url, data){
       if (!data[0])
@@ -43,24 +45,32 @@ class ThePress extends EventManager{
       that._checkIsReady()
     })
 
+    this._builder.setArticleCollection(this._articleCollection)
+    this._builder.setPageCollection(this._pageCollection)
   }
 
 
   _defineRoutingEvent () {
+    let that = this
+
     this._routeManager.on('home', function(){
       console.log('GOTO: home')
+      // TODO
     })
 
     this._routeManager.on('articleListing', function(listIndex){
       console.log('GOTO articleListing: ' + listIndex)
+      // TODO
     })
 
     this._routeManager.on('specificArticle', function(articleId){
       console.log('GOTO article: ' + articleId)
+      that._builder.buildArticle(articleId)
     })
 
     this._routeManager.on('specificPage', function(pageId){
       console.log('GOTO page: ' + pageId)
+      // TODO
     })
   }
 
