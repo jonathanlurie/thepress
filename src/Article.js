@@ -7,7 +7,8 @@ class Article extends EventManager {
 
   constructor (id) {
     super()
-    this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, id ]))
+    let mainConfig = getMainConfig()
+    this._folderURL = getAbsoluteURL(pathJoin([mainConfig.content.articleDir, id ]))
     this._markdownURL = pathJoin([this._folderURL, "index.md"])
     this._configURL = pathJoin([this._folderURL, "config.json"])
 
@@ -22,8 +23,13 @@ class Article extends EventManager {
     this._published = false
     this._markdownContent = null
     this._htmlContent = null
+    this._link = `#${mainConfig.content.articleDir}/${this._id}`
   }
 
+
+  getLink () {
+    return this._link
+  }
 
 
   isConfigLoaded () {
@@ -74,6 +80,7 @@ class Article extends EventManager {
       tags: this._tags,
       excerpt: this._excerpt,
       cover: this._cover,
+      link: this._link,
     }
   }
 

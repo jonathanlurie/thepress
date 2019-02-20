@@ -57,6 +57,11 @@ class ArticleCollection extends EventManager {
   }
 
 
+  loadAllArticlesConfig (cb) {
+    this.loadArticlesConfigSubset(this._articlesList, cb)
+  }
+
+
   loadArticlesConfigSubset (articles, cb) {
     // get the articles with the config not yet loaded
     let noConfArticles = articles.filter( a => !a.isConfigLoaded())
@@ -96,6 +101,8 @@ class ArticleCollection extends EventManager {
     article.loadContent(cb)
   }
 
+
+  
 
 
 }

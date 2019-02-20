@@ -24,13 +24,14 @@ class ThePress extends EventManager{
       that._init()
     })
 
-    this._routeManager = new RouteManager()
-    this._defineRoutingEvent()
+
   }
 
 
   _init () {
     let that = this
+    this._routeManager = new RouteManager()
+    this._defineRoutingEvent()
 
     this._articleCollection = new ArticleCollection()
     console.log(this._articleCollection)
@@ -70,7 +71,7 @@ class ThePress extends EventManager{
 
     this._routeManager.on('specificPage', function(pageId){
       console.log('GOTO page: ' + pageId)
-      // TODO
+      that._builder.buildPage(pageId)
     })
   }
 

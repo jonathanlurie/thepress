@@ -7930,7 +7930,8 @@
 
     constructor (id) {
       super();
-      this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.articleDir, id ]));
+      let mainConfig = getMainConfig();
+      this._folderURL = getAbsoluteURL(pathJoin([mainConfig.content.articleDir, id ]));
       this._markdownURL = pathJoin([this._folderURL, "index.md"]);
       this._configURL = pathJoin([this._folderURL, "config.json"]);
 
@@ -7945,8 +7946,13 @@
       this._published = false;
       this._markdownContent = null;
       this._htmlContent = null;
+      this._link = `#${mainConfig.content.articleDir}/${this._id}`;
     }
 
+
+    getLink () {
+      return this._link
+    }
 
 
     isConfigLoaded () {
@@ -7997,6 +8003,7 @@
         tags: this._tags,
         excerpt: this._excerpt,
         cover: this._cover,
+        link: this._link,
       }
     }
 
@@ -8130,6 +8137,11 @@
     }
 
 
+    loadAllArticlesConfig (cb) {
+      this.loadArticlesConfigSubset(this._articlesList, cb);
+    }
+
+
     loadArticlesConfigSubset (articles, cb) {
       // get the articles with the config not yet loaded
       let noConfArticles = articles.filter( a => !a.isConfigLoaded());
@@ -8170,6 +8182,8 @@
     }
 
 
+    
+
 
   }
 
@@ -8177,8 +8191,9 @@
 
     constructor (id) {
       super();
+      let mainConfig = getMainConfig();
 
-      this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.pageDir, id ]));
+      this._folderURL = getAbsoluteURL(pathJoin([mainConfig.content.pageDir, id ]));
       this._markdownURL = pathJoin([this._folderURL, "index.md"]);
       this._configURL = pathJoin([this._folderURL, "config.json"]);
 
@@ -8189,6 +8204,7 @@
       this._showInMenu = false;
       this._markdownContent = null;
       this._htmlContent = null;
+      this._link = `#${this._id}`;
     }
 
 
@@ -8209,6 +8225,24 @@
       this._configLoaded = true;
     }
 
+
+    getMetadata () {
+      return {
+        id: this._id,
+        title: this._title,
+        cover: this._cover,
+        link: this._link,
+      }
+    }
+
+
+    getLink () {
+      return this._link
+    }
+
+    getHtmlContent () {
+      return this._htmlContent
+    }
 
     getMarkdownURL () {
       return this._markdownURL
@@ -8350,17 +8384,19 @@
 
   }
 
-  const REGEX = {
-    ARTICLE_LISTING_FIRST_PAGE: /^articles\/?$/,
-    ARTICLE_LISTING_PAGE: /^articles\/page-([0-9-]+)$/,
-    SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
-    PAGE: /(\S+)/ // a kind of default regex
-  };
-
   class RouteManager extends EventManager {
 
     constructor () {
       super();
+
+      const mainConfig = getMainConfig();
+      this._REGEX = {
+        ARTICLE_LISTING_FIRST_PAGE: /^articles\/?$/,
+        ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}^articles\/page-([0-9-]+)$`),
+        //SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
+        SPECIFIC_ARTICLE: new RegExp(`${mainConfig.content.articleDir}\/([a-zA-Z0-9-]+)`),
+        PAGE: /(\S+)/ // a kind of default regex
+      };
     }
 
 
@@ -8385,39 +8421,44 @@
       // --> We want to go home
       if (route === '') {
         this.emit('home');
+        window.scrollTo(0, 0);
         return
       }
 
       // route is #articles
       // --> we want the first page of article listing
-      let match = route.match(REGEX.ARTICLE_LISTING_FIRST_PAGE);
+      let match = route.match(this._REGEX.ARTICLE_LISTING_FIRST_PAGE);
       if(match) {
         this.emit('articleListing', [0]);
+        window.scrollTo(0, 0);
         return
       }
 
       // route is of form #articles/page-10
       // --> we want the nth pqge of article listing
-      match = route.match(REGEX.ARTICLE_LISTING_PAGE);
+      match = route.match(this._REGEX.ARTICLE_LISTING_PAGE);
       if(match) {
         this.emit('articleListing', [parseInt(match[1])]);
+        window.scrollTo(0, 0);
         return
       }
 
       // route is of form #articles/my-article
       // --> we want the article my-article
-      match = route.match(REGEX.SPECIFIC_ARTICLE);
+      match = route.match(this._REGEX.SPECIFIC_ARTICLE);
       if(match) {
         this.emit('specificArticle', [match[1]]);
+        window.scrollTo(0, 0);
         return
       }
 
       // should come last
       // route is of form #my-page
       // --> we want the page my-page
-      match = route.match(REGEX.SPECIFIC_PAGE);
+      match = route.match(this._REGEX.SPECIFIC_PAGE);
       if(match) {
         this.emit('specificPage', [route]);
+        window.scrollTo(0, 0);
         return
       }
 
@@ -16449,21 +16490,36 @@
           metadata: article.getMetadata(),
           content: article.getHtmlContent()
         };
-        that._buildGenericPage(articleData);
+        that._buildGenericPage(articleData, 'article');
       });
     }
 
 
-    _buildGenericPage(contentData) {
+    buildPage(id) {
+      let that = this;
+      this._pageCollection.getPage(id, function(page){
+        let pageData = {
+          metadata: page.getMetadata(),
+          content: page.getHtmlContent()
+        };
+        that._buildGenericPage(pageData, 'page');
+      });
+    }
+
+
+    _buildGenericPage(contentData, type) {
       let allData = {
         siteData: getMainConfig().site,
         contentData: contentData
       };
 
+      allData[type] = true;
+
       console.log(allData);
 
       let htmlCorpus = this._template(allData);
       this.flushBody();
+      // this.flushNonScript()
       document.body.innerHTML += htmlCorpus;
     }
 
@@ -16487,13 +16543,14 @@
         that._init();
       });
 
-      this._routeManager = new RouteManager();
-      this._defineRoutingEvent();
+
     }
 
 
     _init () {
       let that = this;
+      this._routeManager = new RouteManager();
+      this._defineRoutingEvent();
 
       this._articleCollection = new ArticleCollection();
       console.log(this._articleCollection);
@@ -16533,7 +16590,7 @@
 
       this._routeManager.on('specificPage', function(pageId){
         console.log('GOTO page: ' + pageId);
-        // TODO
+        that._builder.buildPage(pageId);
       });
     }
 

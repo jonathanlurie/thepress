@@ -4,11 +4,21 @@
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
   <script id="thepress-template" type="text/x-handlebars-template">
+    {{#if article}}
+      THIS IS AN ARTICLE
+    {{/if}}
+
+    {{#if page}}
+      THIS IS A PAGE
+    {{/if}}
+
     <h1>{{contentData.metadata.title}}</h1>
     <img src="{{contentData.metadata.cover}}"></img>
     <div class="content">
       {{{contentData.content}}}
     </div>
+
+
   </script>
 
   <style>

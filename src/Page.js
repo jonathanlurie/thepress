@@ -7,8 +7,9 @@ class Page extends EventManager {
 
   constructor (id) {
     super()
+    let mainConfig = getMainConfig()
 
-    this._folderURL = getAbsoluteURL(pathJoin([getMainConfig().content.pageDir, id ]))
+    this._folderURL = getAbsoluteURL(pathJoin([mainConfig.content.pageDir, id ]))
     this._markdownURL = pathJoin([this._folderURL, "index.md"])
     this._configURL = pathJoin([this._folderURL, "config.json"])
 
@@ -19,6 +20,7 @@ class Page extends EventManager {
     this._showInMenu = false
     this._markdownContent = null
     this._htmlContent = null
+    this._link = `#${this._id}`
   }
 
 
@@ -39,6 +41,24 @@ class Page extends EventManager {
     this._configLoaded = true
   }
 
+
+  getMetadata () {
+    return {
+      id: this._id,
+      title: this._title,
+      cover: this._cover,
+      link: this._link,
+    }
+  }
+
+
+  getLink () {
+    return this._link
+  }
+
+  getHtmlContent () {
+    return this._htmlContent
+  }
 
   getMarkdownURL () {
     return this._markdownURL

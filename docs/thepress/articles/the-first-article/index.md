@@ -1,5 +1,7 @@
 # This is the first article
 
+Go to the [second article](#articles/the-second-article)
+
 Some stock image
 ![image](image01.jpg)
 

@@ -60,21 +60,36 @@ class Builder {
         metadata: article.getMetadata(),
         content: article.getHtmlContent()
       }
-      that._buildGenericPage(articleData)
+      that._buildGenericPage(articleData, 'article')
     })
   }
 
 
-  _buildGenericPage(contentData) {
+  buildPage(id) {
+    let that = this
+    this._pageCollection.getPage(id, function(page){
+      let pageData = {
+        metadata: page.getMetadata(),
+        content: page.getHtmlContent()
+      }
+      that._buildGenericPage(pageData, 'page')
+    })
+  }
+
+
+  _buildGenericPage(contentData, type) {
     let allData = {
       siteData: getMainConfig().site,
       contentData: contentData
     }
 
+    allData[type] = true
+
     console.log(allData)
 
     let htmlCorpus = this._template(allData)
     this.flushBody()
+    // this.flushNonScript()
     document.body.innerHTML += htmlCorpus
   }
 
