@@ -26,6 +26,10 @@ class Article extends EventManager {
     this._link = `#${mainConfig.content.articleDir}/${this._id}`
   }
 
+  getId () {
+    return this._id
+  }
+  
 
   getLink () {
     return this._link

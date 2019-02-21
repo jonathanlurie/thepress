@@ -3,7 +3,30 @@
   <title>The Press</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
+  <style>
+  .current-menu-item {
+    color: red;
+  }
+  </style>
+
   <script id="thepress-template" type="text/x-handlebars-template">
+    <!-- The menu -->
+    <ul>
+      {{#if article}}
+        <li class="current-menu-item">Articles</li>
+      {{else}}
+        <li>Articles</li>
+      {{/if}}
+
+      {{#each menu}}
+        {{#sameString this.id ../content.metadata.id}}
+          <li class="current-menu-item">{{this.title}}</li>
+        {{else}}
+          <li>{{this.title}}</li>
+        {{/sameString}}
+      {{/each}}
+    </ul>
+
     {{#if article}}
       THIS IS AN ARTICLE
     {{/if}}
@@ -12,10 +35,10 @@
       THIS IS A PAGE
     {{/if}}
 
-    <h1>{{contentData.metadata.title}}</h1>
-    <img src="{{contentData.metadata.cover}}"></img>
+    <h1>{{content.metadata.title}}</h1>
+    <img src="{{content.metadata.cover}}"></img>
     <div class="content">
-      {{{contentData.content}}}
+      {{{content.body}}}
     </div>
 
 

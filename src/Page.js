@@ -52,6 +52,10 @@ class Page extends EventManager {
   }
 
 
+  getId () {
+    return this._id
+  }
+
   getLink () {
     return this._link
   }

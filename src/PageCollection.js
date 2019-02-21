@@ -80,6 +80,19 @@ class PageCollection extends EventManager {
   }
 
 
+  getMenuMetadata () {
+    let allMenuPages = this._pageList.filter(p => p.getShowInMenu())
+                                      .map(function(p) {
+                                        return {
+                                          id: p.getId(),
+                                          title: p.getTitle(),
+                                          link: p.getLink(),
+                                        }
+                                      })
+    return allMenuPages
+  }
+
+
 }
 
 export default PageCollection

@@ -7949,6 +7949,10 @@
       this._link = `#${mainConfig.content.articleDir}/${this._id}`;
     }
 
+    getId () {
+      return this._id
+    }
+    
 
     getLink () {
       return this._link
@@ -8236,6 +8240,10 @@
     }
 
 
+    getId () {
+      return this._id
+    }
+
     getLink () {
       return this._link
     }
@@ -8382,6 +8390,19 @@
     }
 
 
+    getMenuMetadata () {
+      let allMenuPages = this._pageList.filter(p => p.getShowInMenu())
+                                        .map(function(p) {
+                                          return {
+                                            id: p.getId(),
+                                            title: p.getTitle(),
+                                            link: p.getLink(),
+                                          }
+                                        });
+      return allMenuPages
+    }
+
+
   }
 
   class RouteManager extends EventManager {
@@ -8392,7 +8413,7 @@
       const mainConfig = getMainConfig();
       this._REGEX = {
         ARTICLE_LISTING_FIRST_PAGE: /^articles\/?$/,
-        ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}^articles\/page-([0-9-]+)$`),
+        ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}\/page-([0-9-]+)$`),
         //SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
         SPECIFIC_ARTICLE: new RegExp(`${mainConfig.content.articleDir}\/([a-zA-Z0-9-]+)`),
         PAGE: /(\S+)/ // a kind of default regex
@@ -16432,6 +16453,11 @@
 
   const TEMPLATE_ID = 'thepress-template';
 
+  // to allow string comparison
+  lib.registerHelper('sameString', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+  });
+
   /*
     add string comparison in template language:
     https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
@@ -16488,7 +16514,7 @@
       this._articleCollection.getArticle(id, function(article){
         let articleData = {
           metadata: article.getMetadata(),
-          content: article.getHtmlContent()
+          body: article.getHtmlContent()
         };
         that._buildGenericPage(articleData, 'article');
       });
@@ -16500,7 +16526,7 @@
       this._pageCollection.getPage(id, function(page){
         let pageData = {
           metadata: page.getMetadata(),
-          content: page.getHtmlContent()
+          body: page.getHtmlContent()
         };
         that._buildGenericPage(pageData, 'page');
       });
@@ -16509,8 +16535,9 @@
 
     _buildGenericPage(contentData, type) {
       let allData = {
-        siteData: getMainConfig().site,
-        contentData: contentData
+        site: getMainConfig().site,
+        content: contentData,
+        menu: this._pageCollection.getMenuMetadata(),
       };
 
       allData[type] = true;

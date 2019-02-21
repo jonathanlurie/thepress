@@ -10,7 +10,7 @@ class RouteManager extends EventManager {
     const mainConfig = getMainConfig()
     this._REGEX = {
       ARTICLE_LISTING_FIRST_PAGE: /^articles\/?$/,
-      ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}^articles\/page-([0-9-]+)$`),
+      ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}\/page-([0-9-]+)$`),
       //SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
       SPECIFIC_ARTICLE: new RegExp(`${mainConfig.content.articleDir}\/([a-zA-Z0-9-]+)`),
       PAGE: /(\S+)/ // a kind of default regex

@@ -2,6 +2,11 @@ import Handlebars from 'handlebars'
 import { getMainConfig } from './Config'
 const TEMPLATE_ID = 'thepress-template'
 
+// to allow string comparison
+Handlebars.registerHelper('sameString', function(arg1, arg2, options) {
+  return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+
 /*
   add string comparison in template language:
   https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
@@ -58,7 +63,7 @@ class Builder {
     this._articleCollection.getArticle(id, function(article){
       let articleData = {
         metadata: article.getMetadata(),
-        content: article.getHtmlContent()
+        body: article.getHtmlContent()
       }
       that._buildGenericPage(articleData, 'article')
     })
@@ -70,7 +75,7 @@ class Builder {
     this._pageCollection.getPage(id, function(page){
       let pageData = {
         metadata: page.getMetadata(),
-        content: page.getHtmlContent()
+        body: page.getHtmlContent()
       }
       that._buildGenericPage(pageData, 'page')
     })
@@ -79,8 +84,9 @@ class Builder {
 
   _buildGenericPage(contentData, type) {
     let allData = {
-      siteData: getMainConfig().site,
-      contentData: contentData
+      site: getMainConfig().site,
+      content: contentData,
+      menu: this._pageCollection.getMenuMetadata(),
     }
 
     allData[type] = true
