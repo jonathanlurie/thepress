@@ -8131,6 +8131,10 @@
     }
 
 
+    /**
+     * From is the index of the article (not of the page)
+     *
+     */
     loadArticlesConfigFromIndex (from=0, cb) {
       if (from < 0)
         throw 'The index of article must be above 0.'
@@ -8186,7 +8190,9 @@
     }
 
 
-    
+    getNumberOfArticles() {
+      return this._articlesList.length
+    }
 
 
   }
@@ -16533,6 +16539,22 @@
     }
 
 
+    buildArticleListChronological(pageIndex) {
+      let that = this;
+      this._articleCollection.loadArticlesConfigFromIndex(
+        pageIndex * getMainConfig().content.articlesPerPage,
+        function(articleConfigs) {
+          let listData = {
+            prev: pageIndex === 0 ? null : `#articles/page-${pageIndex - 1}`,
+            next: ((pageIndex + 1) * getMainConfig().content.articlesPerPage) >= that._articleCollection.getNumberOfArticles() ? null : `#articles/page-${pageIndex + 1}`,
+            articlesMeta: articleConfigs
+          };
+          that._buildGenericPage(listData, 'list');
+        }
+      );
+    }
+
+
     _buildGenericPage(contentData, type) {
       let allData = {
         site: getMainConfig().site,
@@ -16602,12 +16624,12 @@
 
       this._routeManager.on('home', function(){
         console.log('GOTO: home');
-        // TODO
+        that._builder.buildArticleListChronological(0);
       });
 
-      this._routeManager.on('articleListing', function(listIndex){
-        console.log('GOTO articleListing: ' + listIndex);
-        // TODO
+      this._routeManager.on('articleListing', function(pageIndex){
+        console.log('GOTO articleListing: ' + pageIndex);
+        that._builder.buildArticleListChronological(pageIndex);
       });
 
       this._routeManager.on('specificArticle', function(articleId){

@@ -47,6 +47,10 @@ class ArticleCollection extends EventManager {
   }
 
 
+  /**
+   * From is the index of the article (not of the page)
+   *
+   */
   loadArticlesConfigFromIndex (from=0, cb) {
     if (from < 0)
       throw 'The index of article must be above 0.'
@@ -102,7 +106,9 @@ class ArticleCollection extends EventManager {
   }
 
 
-  
+  getNumberOfArticles() {
+    return this._articlesList.length
+  }
 
 
 }

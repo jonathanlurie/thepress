@@ -82,6 +82,22 @@ class Builder {
   }
 
 
+  buildArticleListChronological(pageIndex) {
+    let that = this
+    this._articleCollection.loadArticlesConfigFromIndex(
+      pageIndex * getMainConfig().content.articlesPerPage,
+      function(articleConfigs) {
+        let listData = {
+          prev: pageIndex === 0 ? null : `#articles/page-${pageIndex - 1}`,
+          next: ((pageIndex + 1) * getMainConfig().content.articlesPerPage) >= that._articleCollection.getNumberOfArticles() ? null : `#articles/page-${pageIndex + 1}`,
+          articlesMeta: articleConfigs
+        }
+        that._buildGenericPage(listData, 'list')
+      }
+    )
+  }
+
+
   _buildGenericPage(contentData, type) {
     let allData = {
       site: getMainConfig().site,

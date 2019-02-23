@@ -1,6 +1,6 @@
 import EventManager from './EventManager'
 import { fetchJson, getURL, getAbsoluteURL } from './Tools'
-import { setMainConfig } from './Config'
+import { setMainConfig, getMainConfig } from './Config'
 import ArticleCollection from './ArticleCollection'
 import PageCollection from './PageCollection'
 import RouteManager from './RouteManager'
@@ -56,12 +56,12 @@ class ThePress extends EventManager{
 
     this._routeManager.on('home', function(){
       console.log('GOTO: home')
-      // TODO
+      that._builder.buildArticleListChronological(0)
     })
 
-    this._routeManager.on('articleListing', function(listIndex){
-      console.log('GOTO articleListing: ' + listIndex)
-      // TODO
+    this._routeManager.on('articleListing', function(pageIndex){
+      console.log('GOTO articleListing: ' + pageIndex)
+      that._builder.buildArticleListChronological(pageIndex)
     })
 
     this._routeManager.on('specificArticle', function(articleId){
