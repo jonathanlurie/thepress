@@ -10,6 +10,6 @@
   "content":{
     "pageDir": "pages",
     "articleDir": "articles",
-    "articlesPerPage": 5
+    "articlesPerPage": 1
   }
 }

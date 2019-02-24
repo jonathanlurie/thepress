@@ -3,10 +3,49 @@
   <title>The Press</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700|Roboto:300,400" rel="stylesheet">
+
   <style>
+
+  body {
+    margin: none;
+    font-family: 'Roboto', sans-serif;
+  }
+
   .current-menu-item {
     color: red;
   }
+
+  .article-list {
+    width: 100%;
+  }
+
+  .article-list-elem {
+    width: 100%;
+    height: 250px;
+    margin-bottom: 10px;
+    display: inline-flex;
+  }
+
+
+  .article-list-elem .cover {
+    height: 100%;
+    width: 20%;
+    margin-right: 15px;
+  }
+
+  .article-list-elem .title {
+    font-family: 'Playfair Display', serif;
+    text-decoration: none;
+    color: black;
+    font-size: 30px;
+  }
+
+  .authorship {
+    color: #b1b1b1;
+    font-weight: 300;
+  }
+
   </style>
 
   <script id="thepress-template" type="text/x-handlebars-template">
@@ -27,19 +66,58 @@
       {{/each}}
     </ul>
 
+
     {{#if article}}
       THIS IS AN ARTICLE
+      <h1>{{content.metadata.title}}</h1>
+      <img src="{{content.metadata.cover}}"></img>
+      <div class="content">
+        {{{content.body}}}
+      </div>
     {{/if}}
+
 
     {{#if page}}
       THIS IS A PAGE
+      <h1>{{content.metadata.title}}</h1>
+      <img src="{{content.metadata.cover}}"></img>
+      <div class="content">
+        {{{content.body}}}
+      </div>
     {{/if}}
 
-    <h1>{{content.metadata.title}}</h1>
-    <img src="{{content.metadata.cover}}"></img>
-    <div class="content">
-      {{{content.body}}}
-    </div>
+
+    {{#if list}}
+      THIS IS A LIST
+      {{#if content.prev}}
+        <a href="{{content.prev}}"> page {{content.prevIndex}} </a>
+      {{/if}}
+
+      {{#if content.next}}
+        <a href="{{content.next}}"> page {{content.nextIndex }} </a>
+      {{/if}}
+
+      <br>
+
+      <div class="article-list">
+      {{#each content.articlesMeta}}
+        <div class="article-list-elem">
+          <div class="cover" style="background: url({{this.cover}}) no-repeat center center / cover;"></div>
+          <div>
+            <a class="title" href="{{this.link}}">{{this.title}}</a><br>
+            <div class="authorship">by {{this.author}} the {{this.date}}</div>
+
+
+          </div>
+        </div>
+
+
+      {{/each}}
+      </div>
+
+    {{/if}}
+
+
 
 
   </script>
@@ -58,6 +136,5 @@
   <script src="../../dist/thepress.js"></script>
 </head>
 <body>
-  fghjk
 </body>
 </html>

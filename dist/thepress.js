@@ -16543,11 +16543,15 @@
       let that = this;
       this._articleCollection.loadArticlesConfigFromIndex(
         pageIndex * getMainConfig().content.articlesPerPage,
-        function(articleConfigs) {
+        function(articles) {
+
           let listData = {
+            curentIndex: pageIndex,
+            prevIndex: pageIndex - 1,
+            nextIndex: pageIndex + 1,
             prev: pageIndex === 0 ? null : `#articles/page-${pageIndex - 1}`,
             next: ((pageIndex + 1) * getMainConfig().content.articlesPerPage) >= that._articleCollection.getNumberOfArticles() ? null : `#articles/page-${pageIndex + 1}`,
-            articlesMeta: articleConfigs
+            articlesMeta: articles.map(a => a.getMetadata())
           };
           that._buildGenericPage(listData, 'list');
         }
