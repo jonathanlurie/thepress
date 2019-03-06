@@ -12,6 +12,30 @@
     font-family: 'Roboto', sans-serif;
   }
 
+  #top-menu {
+    margin: 50px auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: fit-content;
+  }
+
+  #top-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #top-menu li {
+    float: left;
+    margin-right: 20px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 14px;
+  }
+
+
   #main {
     width: 68vw;
     margin-left: 16vw;
@@ -42,7 +66,8 @@
   }
 
   #header {
-    margin-top: 20px;
+    margin-top: 40px;
+    margin-bottom: 75px;
   }
 
   .current-menu-item {
@@ -148,26 +173,28 @@
 
 
         <!-- The menu -->
-        <ul>
-          {{#if article}}
-            <li class="current-menu-item">Articles</li>
-          {{else}}
-            <li>Articles</li>
-          {{/if}}
-
-          {{#each menu}}
-            {{#sameString this.id ../content.metadata.id}}
-              <li class="current-menu-item">{{this.title}}</li>
+        <div id="top-menu">
+          <ul>
+            {{#if article}}
+              <li class="current-menu-item">Articles</li>
             {{else}}
-              <li>{{this.title}}</li>
-            {{/sameString}}
-          {{/each}}
-        </ul>
+              <li>Articles</li>
+            {{/if}}
+
+            {{#each menu}}
+              {{#sameString this.id ../content.metadata.id}}
+                <li class="current-menu-item">{{this.title}}</li>
+              {{else}}
+                <li>{{this.title}}</li>
+              {{/sameString}}
+            {{/each}}
+          </ul>
+        </div>
 
       </div> <!-- header -->
 
       {{#if article}}
-        THIS IS AN ARTICLE
+
         <h1>{{content.metadata.title}}</h1>
         <img src="{{content.metadata.cover}}"></img>
         <div class="content">
@@ -177,7 +204,7 @@
 
 
       {{#if page}}
-        THIS IS A PAGE
+
         <h1>{{content.metadata.title}}</h1>
         <img src="{{content.metadata.cover}}"></img>
         <div class="content">
@@ -187,7 +214,7 @@
 
 
       {{#if list}}
-        THIS IS A LIST
+
         {{#if content.prev}}
           <a href="{{content.prev}}"> page {{content.prevIndex}} </a>
         {{/if}}
