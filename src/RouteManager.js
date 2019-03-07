@@ -82,6 +82,15 @@ class RouteManager extends EventManager {
 
   }
 
+
+  /**
+   * Go to the given hash
+   * @param  {string} path - path (without # symbole)
+   */
+  goTo(path) {
+    location.hash = `${path}`
+  }
+
 }
 
 export default RouteManager

@@ -1,0 +1,337 @@
+<html>
+<head>
+  <title>The Press</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700|Roboto:300,400" rel="stylesheet">
+
+  <style>
+
+  body {
+    margin: none;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  #container {
+    min-height:100%;
+    position:relative;
+  }
+
+  #top-menu {
+    margin: 50px auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: fit-content;
+  }
+
+  #top-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #top-menu li {
+    float: left;
+    margin-right: 20px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 14px;
+    padding-bottom: 5px;
+  }
+
+  #top-menu a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  #top-menu a:hover {
+    opacity: 0.5;
+  }
+
+  #main {
+    width: 68vw;
+    margin-left: 16vw;
+    padding-bottom:300px;
+  }
+
+  #main > * {
+    max-width: 68vw;
+  }
+
+  #footer {
+    width: 100vw;
+    min-height: 300px;
+    margin-top: 5px;
+    background: #222;
+    position:absolute;
+    bottom:0;
+  }
+
+  #header-logo {
+    width: 100px;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: auto;
+    border: solid 3px #000;
+  }
+
+  #header-logo  img {
+    width: 100%;
+  }
+
+  #header {
+    margin-top: 40px;
+    margin-bottom: 75px;
+  }
+
+  #arrow-left {
+    position: fixed;
+    height: 80px;
+    left: 10%;
+    top: 30%;
+    opacity: 0.2;
+    transition: all 0.2s;
+  }
+
+  #arrow-left:hover {
+    opacity: 1;
+  }
+
+  #arrow-left img {
+    height: 100%;
+  }
+
+  #arrow-right {
+    position: fixed;
+    height: 80px;
+    right: 10%;
+    top: 30%;
+    opacity: 0.2;
+    transition: all 0.2s;
+  }
+
+  #arrow-right:hover {
+    opacity: 1;
+  }
+
+  #arrow-right img {
+    height: 100%;
+  }
+
+  .current-menu-item {
+    border-bottom: solid 1px;
+  }
+
+  .article-list {
+    width: 100%;
+  }
+
+  .article-list-elem {
+    width: 100%;
+    height: 250px;
+    margin-bottom: 10px;
+    /*display: inline-flex;*/
+    position: relative;
+  }
+
+
+  .article-list-elem .cover {
+    height: 100%;
+    width: 100%;
+    /*margin-right: 15px;*/
+    position: absolute;
+    z-index: 1;
+  }
+
+  .article-list-elem .info {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: #00000045;
+    color: white;
+    z-index: 2;
+  }
+
+  .article-list-elem > .info > :first-child {
+    margin-top: 40px;
+  }
+
+  .article-list-elem > .info > * {
+    margin-left: 25px;
+    margin-right: 25px;
+
+  }
+
+  .article-list-elem .title {
+    font-family: 'Playfair Display', serif;
+    text-decoration: none;
+    color: inherit;
+    font-size: 40px;
+  }
+
+  .article-list-elem .author {
+    font-weight: 300;
+    color: #ffffff8c;
+  }
+
+  .article-list-elem .date{
+    font-weight: 300;
+    font-size: 14px;
+    color: #ffffff8c;
+  }
+
+  .article-list-elem .excerpt {
+    font-weight: 300;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 40px;
+    width: 55%;
+  }
+
+  .article-list-elem .tag-list {
+    display: inline-flex;
+    position: absolute;
+    margin-bottom: 40px;
+    bottom: 0;
+    right: 0;
+  }
+
+  .article-list-elem .tag-list .tag {
+    margin-left: 10px;
+    background: #00000066;
+    color: #ffffffcf;
+    padding: 3px 7px;
+    margin-bottom: -4px;
+  }
+
+
+  </style>
+
+  <script id="thepress-template" type="text/x-handlebars-template">
+    <div id="container">
+      <div id="main">
+
+        <div id="header">
+
+          <div id="header-logo">
+            <a href="#">
+            <img src="{{site.logo}}"/>
+            </a>
+          </div>
+
+
+
+          <!-- The menu -->
+          <div id="top-menu">
+            <ul>
+              {{#if article}}
+                <li class="current-menu-item"><a href="">Articles<a></li>
+              {{else}}
+                <li><a href="#">Articles</a></li>
+              {{/if}}
+
+              {{#each menu}}
+                {{#sameString this.id ../content.metadata.id}}
+                  <li class="current-menu-item"><a href={{this.link}}>{{this.title}}</a></li>
+                {{else}}
+                  <li><a href={{this.link}}>{{this.title}}</a></li>
+                {{/sameString}}
+              {{/each}}
+            </ul>
+          </div>
+
+        </div> <!-- header -->
+
+        {{#if article}}
+
+          <h1>{{content.metadata.title}}</h1>
+          <img src="{{content.metadata.cover}}"></img>
+          <div class="content">
+            {{{content.body}}}
+          </div>
+        {{/if}}
+
+
+        {{#if page}}
+
+          <h1>{{content.metadata.title}}</h1>
+          <img src="{{content.metadata.cover}}"></img>
+          <div class="content">
+            {{{content.body}}}
+          </div>
+        {{/if}}
+
+
+        {{#if list}}
+
+          {{#if content.prev}}
+            <div id="arrow-left">
+              <a href="{{content.prev}}" title="page {{content.prevIndex}}"><img src="assets/arrow_l.png"/></a>
+            </div>
+          {{/if}}
+
+          {{#if content.next}}
+            <div id="arrow-right">
+              <a href="{{content.next}}" title="page {{content.nextIndex }} "><img src="assets/arrow_r.png"/></a>
+            </div>
+          {{/if}}
+
+
+
+
+          <br>
+
+          <div class="article-list">
+          {{#each content.articlesMeta}}
+            <div class="article-list-elem">
+              <div class="cover" style="background: url({{this.cover}}) no-repeat center center / cover;"></div>
+              <div class="info">
+                <div class="date">{{this.date}}</div>
+                <a class="title" href="{{this.link}}">{{this.title}}</a><br>
+                <div class="author">By {{this.author}}</div>
+                <div class="excerpt">{{this.excerpt}}</div>
+                <div class="tag-list">
+                  {{#each this.tags}}
+                  <div class="tag">{{this}}</div>
+                  {{/each}}
+                </div>
+
+
+              </div>
+            </div>
+
+
+          {{/each}}
+          </div>
+
+        {{/if}}
+
+      </div> <!-- main -->
+
+      <div id="footer">
+        footer
+      </div>
+
+    </div> <!-- container -->
+  </script>
+
+  <style>
+
+  body {
+    margin: 0;
+  }
+
+
+
+  </style>
+
+  <!-- MUST be the last thing in <head> -->
+  <script src="js/thepress.js"></script>
+</head>
+<body>
+</body>
+</html>
