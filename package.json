@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production rollup -c",
-    "dev": "serve -l $(((RANDOM%3000)+3000)) docs & NODE_ENV=development rollup -w -c",
+    "dev": "serve docs & NODE_ENV=development rollup -w -c",
     "doc": "documentation build src/index.js -o ./doc/ -f html; documentation build src/** -f md > documentation.md",
     "lint": "eslint src"
   },
@@ -59,6 +59,11 @@
   },
   "dependencies": {
     "handlebars": "^4.1.0",
-    "markdown-it": "^8.4.2"
+    "highlight.js": "^9.15.6",
+    "markdown-it": "^8.4.2",
+    "markdown-it-emoji": "^1.4.0",
+    "markdown-it-footnote": "^3.0.1",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0"
   }
 }
