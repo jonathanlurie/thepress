@@ -1,4 +1,3 @@
-# About
 *The Press* is a playground to publish content without having to generate anything. Just write.
 
 We gotta burn the rain forest, dump toxic waste, pollute the air, and rip up the OZONE! 'Cause maybe if we screw up this planet enough, they won't want it anymore! Yeah, but your scientists were so preoccupied with whether or not they could, they didn't stop to think if they should.

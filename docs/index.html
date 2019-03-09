@@ -52,9 +52,9 @@
   }
 
   #main {
-    width: 68vw;
-    margin-left: 16vw;
-    padding-bottom:300px;
+    width: 60vw;
+    margin-left: 20vw;
+    padding-bottom:300px; /* so that it's not hidden by the footer */
   }
 
   #main > * {
@@ -63,7 +63,7 @@
 
   #footer {
     width: 100vw;
-    min-height: 300px;
+    min-height: 200px;
     margin-top: 5px;
     background: #222;
     position:absolute;
@@ -85,7 +85,7 @@
 
   #header {
     margin-top: 40px;
-    margin-bottom: 75px;
+    margin-bottom: 80px;
   }
 
   #arrow-left {
@@ -213,6 +213,55 @@
     margin-bottom: -4px;
   }
 
+  .page-header {
+    height: 300px;
+    position: relative;
+  }
+
+  .page-header-nocover {
+    position: relative;
+    height: 150px;
+  }
+
+  .page-title {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+
+  .the-title-text {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    font-family: 'Playfair Display', serif;
+    font-size: 70px;
+  }
+
+  .page-cover {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  .darker-bg {
+    background: #00000033;
+  }
+
+  .white-text {
+    color: #FFF;
+  }
+
+  .black-text {
+    color: #000;
+  }
+
+
+
 
   </style>
 
@@ -253,8 +302,22 @@
 
         {{#if article}}
 
-          <h1>{{content.metadata.title}}</h1>
-          <img src="{{content.metadata.cover}}"></img>
+          {{#if content.metadata.cover}}
+            <div class="page-header">
+              <div class="page-cover" style="background: url({{content.metadata.cover}}) no-repeat center center / cover;">
+              </div>
+              <div class="page-title darker-bg">
+                <div class="the-title-text white-text">{{content.metadata.title}}</div>
+              </div>
+            </div>
+          {{else}}
+            <div class="page-header-nocover">
+              <div class="page-title">
+                <div class="the-title-text black-text">{{content.metadata.title}}</div>
+              </div>
+            </div>
+          {{/if}}
+
           <div class="content">
             {{{content.body}}}
           </div>
@@ -263,8 +326,22 @@
 
         {{#if page}}
 
-          <h1>{{content.metadata.title}}</h1>
-          <img src="{{content.metadata.cover}}"></img>
+          {{#if content.metadata.cover}}
+            <div class="page-header">
+              <div class="page-cover" style="background: url({{content.metadata.cover}}) no-repeat center center / cover;">
+              </div>
+              <div class="page-title darker-bg">
+                <div class="the-title-text white-text">{{content.metadata.title}}</div>
+              </div>
+            </div>
+          {{else}}
+            <div class="page-header-nocover">
+              <div class="page-title">
+                <div class="the-title-text black-text">{{content.metadata.title}}</div>
+              </div>
+            </div>
+          {{/if}}
+
           <div class="content">
             {{{content.body}}}
           </div>

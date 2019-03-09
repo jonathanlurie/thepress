@@ -52,7 +52,12 @@ class Article extends EventManager {
 
 
   setConfig (config) {
-    this._author = config.author
+    if(config.author === undefined || config.author === null || config.author === ''){
+      this._author = getMainConfig().site.author
+    } else {
+      this._author = config.author
+    }
+
     this._date = config.date
 
     if(config.cover === '' || config.cover === null || config.cover === undefined){

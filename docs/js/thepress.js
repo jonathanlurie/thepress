@@ -7961,7 +7961,7 @@
     getId () {
       return this._id
     }
-    
+
 
     getLink () {
       return this._link
@@ -7984,13 +7984,22 @@
 
 
     setConfig (config) {
-      this._author = config.author;
+      if(config.author === undefined || config.author === null || config.author === ''){
+        this._author = getMainConfig().site.author;
+      } else {
+        this._author = config.author;
+      }
+
       this._date = config.date;
 
-      if (config.cover.startsWith('http')) {
-        this._cover = config.cover;
+      if(config.cover === '' || config.cover === null || config.cover === undefined){
+        this._cover = null;
       } else {
-        this._cover = pathJoin([this._folderURL, config.cover]);
+        if (config.cover.startsWith('http')) {
+          this._cover = config.cover;
+        } else {
+          this._cover = pathJoin([this._folderURL, config.cover]);
+        }
       }
 
       this._excerpt = config.excerpt;

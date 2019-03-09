@@ -1,4 +1,3 @@
-# How to?
 The setup is super simple
 
 Forget the fat lady! You're obsessed with the fat lady! Drive us out of here! Hey, take a look at the earthlings. Goodbye! Yes, Yes, without the oops! Did he just throw my cat out of the window? Is this my espresso machine? Wh-what is-h-how did you get my espresso machine?
