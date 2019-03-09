@@ -22,7 +22,7 @@ const configurations = [
       commonjs({ include: 'node_modules/**' }),
       globals(),
       builtins(),
-      execute(`cp ${pkg.unpkg} docs/js/`)
+      execute(`cp dist/* docs/js/`)
     ]
   },
 
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === "production") {
       globals(),
       builtins(),
       terser(),
-      execute(`cp ${pkg.unpkg} docs/js/`)
+      execute(`cp dist/* docs/js/`)
     ]
   })
 }

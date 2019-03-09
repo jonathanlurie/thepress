@@ -29,7 +29,7 @@ class Article extends EventManager {
   getId () {
     return this._id
   }
-  
+
 
   getLink () {
     return this._link
@@ -55,10 +55,14 @@ class Article extends EventManager {
     this._author = config.author
     this._date = config.date
 
-    if (config.cover.startsWith('http')) {
-      this._cover = config.cover
+    if(config.cover === '' || config.cover === null || config.cover === undefined){
+      this._cover = null
     } else {
-      this._cover = pathJoin([this._folderURL, config.cover])
+      if (config.cover.startsWith('http')) {
+        this._cover = config.cover
+      } else {
+        this._cover = pathJoin([this._folderURL, config.cover])
+      }
     }
 
     this._excerpt = config.excerpt

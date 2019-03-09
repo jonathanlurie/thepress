@@ -58,7 +58,7 @@
   }
 
   #main > * {
-    max-width: 68vw;
+    max-width: 100%;
   }
 
   #footer {
@@ -154,6 +154,11 @@
     background: #00000045;
     color: white;
     z-index: 2;
+    transition: all 0.2s;
+  }
+
+  .article-list-elem .info:hover {
+    background: #00000000;
   }
 
   .article-list-elem > .info > :first-child {
@@ -280,11 +285,6 @@
             </div>
           {{/if}}
 
-
-
-
-          <br>
-
           <div class="article-list">
           {{#each content.articlesMeta}}
             <div class="article-list-elem">
@@ -299,12 +299,8 @@
                   <div class="tag">{{this}}</div>
                   {{/each}}
                 </div>
-
-
               </div>
             </div>
-
-
           {{/each}}
           </div>
 

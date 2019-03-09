@@ -30,10 +30,14 @@ class Page extends EventManager {
 
 
   setConfig (config) {
-    if (config.cover.startsWith('http')) {
-      this._cover = config.cover
+    if(config.cover === '' || config.cover === null || config.cover === undefined){
+      this._cover = null
     } else {
-      this._cover = pathJoin([this._folderURL, config.cover])
+      if (config.cover.startsWith('http')) {
+        this._cover = config.cover
+      } else {
+        this._cover = pathJoin([this._folderURL, config.cover])
+      }
     }
 
     this._title = config.title
