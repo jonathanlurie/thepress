@@ -34,14 +34,12 @@ class ThePress extends EventManager{
     this._defineRoutingEvent()
 
     this._articleCollection = new ArticleCollection()
-    console.log(this._articleCollection)
     // the first page of articles should be loaded
     this._articleCollection.on('ready', function(articles) {
       that._checkIsReady()
     })
 
     this._pageCollection = new PageCollection()
-    console.log(this._pageCollection)
     this._pageCollection.on('ready', function(pages) {
       that._checkIsReady()
     })

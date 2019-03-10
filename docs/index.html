@@ -13,6 +13,12 @@
     font-family: 'Roboto', sans-serif;
   }
 
+  pre {
+    background: #00000008;
+    padding: 15px;
+    border-left: #00000017 8px solid;
+  }
+
   #container {
     min-height:100%;
     position:relative;
@@ -263,7 +269,28 @@
   }
 
 
+  .article-meta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: fit-content;
+    margin-bottom: 18px;
+    color: #ffffff;
+    z-index: 1;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-weight: 300;
+  }
 
+  .article-meta .tag {
+    margin-left: 10px;
+    background: #0000009e;
+    color: #ffffff;
+    padding: 3px 7px;
+    margin-bottom: -4px;
+  }
 
   </style>
 
@@ -284,11 +311,11 @@
           <!-- The menu -->
           <div id="top-menu">
             <ul>
-              {{#if article}}
+              {{#ifCond article '||' list}}
                 <li class="current-menu-item"><a href="#">Articles<a></li>
               {{else}}
                 <li><a href="#">Articles</a></li>
-              {{/if}}
+              {{/ifCond}}
 
               {{#each menu}}
                 {{#sameString this.id ../content.metadata.id}}
@@ -311,6 +338,18 @@
               <div class="page-title darker-bg">
                 <div class="the-title-text white-text">{{content.metadata.title}}</div>
               </div>
+
+              <div class="article-meta">
+                <p>
+                  {{content.metadata.author}} – {{content.metadata.date}}
+                </p>
+                <p>
+                  {{#each content.metadata.tags}}
+                  <span class="tag">{{this}}</span>
+                  {{/each}}
+                </p>
+              </div>
+
             </div>
           {{else}}
             <div class="page-header-nocover">
