@@ -9,7 +9,7 @@
   <style>
 
   body {
-    margin: none;
+    margin: 0;
     font-family: 'Roboto', sans-serif;
   }
 
@@ -60,22 +60,16 @@
   }
 
   #main {
-    width: 60vw;
-    margin-left: 20vw;
     padding-bottom:300px; /* so that it's not hidden by the footer */
   }
 
-  #main * {
-    max-width: 100%;
+  .main-column {
+    width: 60vw;
+    margin-left: 20vw;
   }
 
-  #footer {
-    width: 100vw;
-    min-height: 200px;
-    margin-top: 5px;
-    background: #222;
-    position:absolute;
-    bottom:0;
+  .main-column * {
+    max-width: 100%;
   }
 
   #header-logo {
@@ -275,7 +269,7 @@
     right: 0;
     bottom: 0;
     width: fit-content;
-    margin-bottom: 18px;
+    margin-bottom: 70px;
     color: #ffffff;
     z-index: 1;
     margin-left: auto;
@@ -292,11 +286,94 @@
     margin-bottom: -4px;
   }
 
+  .inline-flexer {
+    display: inline-flex;
+  }
+
+  .relative-positioner  {
+    position: relative;
+  }
+
+  #footer {
+    width: 100vw;
+    min-height: 200px;
+    margin-top: 5px;
+    background: #222;
+    position:absolute;
+    bottom:0;
+    padding-top: 20px;
+    color: #FFF;
+    font-weight: 300;
+  }
+
+  #footer > * {
+    opacity: 0.2;
+  }
+
+  #footer-logo {
+    width: 100px;
+    border: solid 3px #fff;
+  }
+
+  #footer-logo  img {
+    width: 100%;
+  }
+
+  #footer-text {
+    margin: auto;
+    margin-left: 10px;
+  }
+
+  #footer-text a {
+    color: #FFF;
+    text-decoration: none;
+  }
+
+  #footer-menu {
+    position: absolute;
+    right: 0;
+  }
+
+  #footer-menu a {
+    color: #FFF;
+    text-decoration: none;
+  }
+
+  #footer a{
+    transition: all 0.2s;
+  }
+
+  #footer a:hover {
+    color: #999;
+  }
+
+
+  #footer-menu ul {
+    list-style-type: none;
+    text-align: right;
+    margin-top: 0;
+  }
+
+
+
+  @media screen and (max-width: 850px) {
+    .main-column {
+      width: 90vw;
+      margin-left: 5vw;
+    }
+
+
+    #top-menu li {
+      font-size: larger;
+    }
+  }
+
+
   </style>
 
   <script id="thepress-template" type="text/x-handlebars-template">
     <div id="container">
-      <div id="main">
+      <div id="main" class="main-column">
 
         <div id="header">
 
@@ -340,14 +417,7 @@
               </div>
 
               <div class="article-meta">
-                <p>
-                  {{content.metadata.author}} – {{content.metadata.date}}
-                </p>
-                <p>
-                  {{#each content.metadata.tags}}
-                  <span class="tag">{{this}}</span>
-                  {{/each}}
-                </p>
+                {{content.metadata.author}} – {{content.metadata.date}}
               </div>
 
             </div>
@@ -427,21 +497,35 @@
       </div> <!-- main -->
 
       <div id="footer">
-        footer
+        <div class="main-column  relative-positioner">
+          <div class="inline-flexer">
+            <div id="footer-logo">
+              <a href="https://github.com/jonathanlurie/thepress">
+              <img src="{{site.logoAlternative}}"/>
+              </a>
+            </div>
+
+            <div id="footer-text">
+              {{site.title}},<br>
+              {{site.subtitle}}<br><br>
+              <a href="https://github.com/jonathanlurie/thepress">Fork it on GitHub.</a>
+            </div>
+
+            <div id="footer-menu">
+              <ul>
+                  <li><a href="#">Articles</a></li>
+                {{#each menu}}
+                  <li><a href={{this.link}}>{{this.title}}</a></li>
+                {{/each}}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div> <!-- container -->
   </script>
 
-  <style>
-
-  body {
-    margin: 0;
-  }
-
-
-
-  </style>
 
   <!-- MUST be the last thing in <head> -->
   <script src="js/thepress.js"></script>

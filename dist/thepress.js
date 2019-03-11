@@ -170,6 +170,10 @@
       mainConfig.site.logo = getAbsoluteURL(mainConfig.site.logo);
     }
 
+    if('logoAlternative' in mainConfig.site) {
+      mainConfig.site.logoAlternative = getAbsoluteURL(mainConfig.site.logoAlternative);
+    }
+
     if('cover' in mainConfig.site) {
       mainConfig.site.cover = getAbsoluteURL(mainConfig.site.cover);
     }

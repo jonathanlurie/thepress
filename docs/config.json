@@ -1,9 +1,10 @@
 {
   "site": {
     "title": "The Press",
-    "subtitle": "The static site non-generator",
+    "subtitle": "The static site non-generator.",
     "author": "Jonathan Lurie",
     "logo": "assets/logo.png",
+    "logoAlternative": "assets/logo_white_alpha.png",
     "cover": "assets/cover_2000.jpg"
   },
 
