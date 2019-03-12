@@ -11,6 +11,9 @@
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 17px;
+    text-align: justify;
   }
 
   pre {
@@ -44,8 +47,6 @@
     margin-right: 20px;
     text-transform: uppercase;
     font-weight: 300;
-    font-size: 14px;
-    line-height: 14px;
     padding-bottom: 5px;
   }
 
@@ -186,7 +187,6 @@
 
   .article-list-elem .date{
     font-weight: 300;
-    font-size: 14px;
     color: #ffffff8c;
   }
 
@@ -307,7 +307,7 @@
   }
 
   #footer > * {
-    opacity: 0.2;
+    opacity: 0.3;
   }
 
   #footer-logo {
@@ -354,16 +354,25 @@
     margin-top: 0;
   }
 
-
-
   @media screen and (max-width: 1000px) {
+    #footer * {
+      font-size: large;
+    }
+
     .main-column {
       width: 90vw;
       margin-left: 5vw;
     }
 
-
     #top-menu li {
+      font-size: larger;
+    }
+
+    .article-list-elem .excerpt {
+      font-size: large;
+    }
+
+    .content {
       font-size: larger;
     }
   }
