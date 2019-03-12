@@ -73,7 +73,7 @@ class Article extends EventManager {
     this._excerpt = config.excerpt
     this._title = config.title
     this._published = config.published
-    this._tags = config.tags.split(',').map(t=> t.trim())
+    this._tags = config.tags.split(',').map(t=> t.trim().toLowerCase())
     this._configLoaded = true
   }
 
@@ -170,6 +170,11 @@ class Article extends EventManager {
         }
       })
     }
+  }
+
+
+  hasTag(tag) {
+    return !!~this._tags.indexOf(tag.toLowerCase())
   }
 
 }

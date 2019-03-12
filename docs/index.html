@@ -214,6 +214,16 @@
     margin-bottom: -4px;
   }
 
+  .article-list-elem .tag-list .tag a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .article-list-elem .tag-list .tag a:hover {
+    color: #FFF;
+  }
+
   .page-header {
     height: 300px;
     margin-bottom: 25px;
@@ -493,7 +503,7 @@
                 <div class="excerpt">{{this.excerpt}}</div>
                 <div class="tag-list">
                   {{#each this.tags}}
-                  <div class="tag">{{this}}</div>
+                  <div class="tag"><a href="{{../../site.tagRoute}}{{this}}">{{this}}</a></div>
                   {{/each}}
                 </div>
               </div>
@@ -502,6 +512,47 @@
           </div>
 
         {{/if}}
+
+
+
+
+        {{#if tagList}}
+
+          {{#if content.prev}}
+            <div id="arrow-left">
+              <a href="{{content.prev}}" title="page {{content.prevIndex}}"><img src="assets/arrow_l.png"/></a>
+            </div>
+          {{/if}}
+
+          {{#if content.next}}
+            <div id="arrow-right">
+              <a href="{{content.next}}" title="page {{content.nextIndex }} "><img src="assets/arrow_r.png"/></a>
+            </div>
+          {{/if}}
+
+          <div class="article-list">
+          {{#each content.articlesMeta}}
+            <div class="article-list-elem">
+              <div class="cover" style="background: url({{this.cover}}) no-repeat center center / cover;"></div>
+              <div class="info">
+                <div class="date">{{this.date}}</div>
+                <a class="title" href="{{this.link}}">{{this.title}}</a><br>
+                <div class="author">By {{this.author}}</div>
+                <div class="excerpt">{{this.excerpt}}</div>
+                <div class="tag-list">
+                  {{#each this.tags}}
+                  <div class="tag"><a href="{{../../site.tagRoute}}{{this}}">{{this}}</a></div>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+          {{/each}}
+          </div>
+
+        {{/if}}
+
+
+
 
       </div> <!-- main -->
 

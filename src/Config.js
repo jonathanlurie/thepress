@@ -17,6 +17,7 @@ function setMainConfig (data) {
     mainConfig.site.cover = getAbsoluteURL(mainConfig.site.cover)
   }
 
+  mainConfig.site.tagRoute = "#tag/"
   console.log(mainConfig)
 }
 

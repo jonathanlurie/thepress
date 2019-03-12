@@ -13,6 +13,7 @@ class RouteManager extends EventManager {
       ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}\/page-([0-9-]+)$`),
       //SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
       SPECIFIC_ARTICLE: new RegExp(`${mainConfig.content.articleDir}\/([a-zA-Z0-9-]+)`),
+      SPECIFIC_TAG: /tag\/(\S+)/,
       PAGE: /(\S+)/ // a kind of default regex
     }
   }
@@ -66,6 +67,15 @@ class RouteManager extends EventManager {
     match = route.match(this._REGEX.SPECIFIC_ARTICLE)
     if(match) {
       this.emit('specificArticle', [match[1]])
+      window.scrollTo(0, 0)
+      return
+    }
+
+    // route of this form #tag/my-tag
+    // --> we want a list of articles with this tag
+    match = route.match(this._REGEX.SPECIFIC_TAG)
+    if(match) {
+      this.emit('specificTag', [match[1]])
       window.scrollTo(0, 0)
       return
     }

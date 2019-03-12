@@ -2,7 +2,7 @@
   "title": "The Second Article",
   "author": "Johnny Bravo",
   "date": "2018-02-04",
-  "tags": "javascript, things, kombucha",
+  "tags": "javascript, things, kombucha, article",
   "excerpt": "This is the content of the second article, not a very interesting one but still",
   "cover": "other-cover.jpg",
   "published": true

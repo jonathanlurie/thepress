@@ -131,6 +131,18 @@ class Builder {
   }
 
 
+  buildArticleListPerTag(tag) {
+    let that = this
+    this._articleCollection.loadAllArticlesConfig(function(articles){
+      let listData = {
+        tag: tag,
+        articlesMeta: articles.filter(a => a.hasTag(tag)).map(a => a.getMetadata())
+      }
+      that._buildGenericPage(listData, 'tagList')
+    })
+  }
+
+
   _buildGenericPage(contentData, type) {
     let allData = {
       site: getMainConfig().site,

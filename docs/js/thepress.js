@@ -178,6 +178,7 @@
       mainConfig.site.cover = getAbsoluteURL(mainConfig.site.cover);
     }
 
+    mainConfig.site.tagRoute = "#tag/";
     console.log(mainConfig);
   }
 
@@ -30942,7 +30943,7 @@
       this._excerpt = config.excerpt;
       this._title = config.title;
       this._published = config.published;
-      this._tags = config.tags.split(',').map(t=> t.trim());
+      this._tags = config.tags.split(',').map(t=> t.trim().toLowerCase());
       this._configLoaded = true;
     }
 
@@ -31039,6 +31040,11 @@
           }
         });
       }
+    }
+
+
+    hasTag(tag) {
+      return !!~this._tags.indexOf(tag.toLowerCase())
     }
 
   }
@@ -31381,6 +31387,7 @@
         ARTICLE_LISTING_PAGE: new RegExp(`${mainConfig.content.articleDir}\/page-([0-9-]+)$`),
         //SPECIFIC_ARTICLE: /articles\/([a-zA-Z0-9-]+)/,
         SPECIFIC_ARTICLE: new RegExp(`${mainConfig.content.articleDir}\/([a-zA-Z0-9-]+)`),
+        SPECIFIC_TAG: /tag\/(\S+)/,
         PAGE: /(\S+)/ // a kind of default regex
       };
     }
@@ -31434,6 +31441,15 @@
       match = route.match(this._REGEX.SPECIFIC_ARTICLE);
       if(match) {
         this.emit('specificArticle', [match[1]]);
+        window.scrollTo(0, 0);
+        return
+      }
+
+      // route of this form #tag/my-tag
+      // --> we want a list of articles with this tag
+      match = route.match(this._REGEX.SPECIFIC_TAG);
+      if(match) {
+        this.emit('specificTag', [match[1]]);
         window.scrollTo(0, 0);
         return
       }
@@ -39556,6 +39572,18 @@
     }
 
 
+    buildArticleListPerTag(tag) {
+      let that = this;
+      this._articleCollection.loadAllArticlesConfig(function(articles){
+        let listData = {
+          tag: tag,
+          articlesMeta: articles.filter(a => a.hasTag(tag)).map(a => a.getMetadata())
+        };
+        that._buildGenericPage(listData, 'tagList');
+      });
+    }
+
+
     _buildGenericPage(contentData, type) {
       let allData = {
         site: getMainConfig().site,
@@ -39636,13 +39664,18 @@
         that._builder.buildArticle(articleId);
       });
 
+      this._routeManager.on('specificTag', function(tag){
+        console.log('GOTO tag: ' + tag);
+        that._builder.buildArticleListPerTag(tag);
+      });
+
       this._routeManager.on('specificPage', function(pageId){
         console.log('GOTO page: ' + pageId);
         try {
           that._builder.buildPage(pageId);
         } catch(e){
           console.error(`The page ${pageId} does not exist, redirecting to home.`);
-          that._routeManager.goTo('about');
+          that._routeManager.goTo('');
         }
       });
     }

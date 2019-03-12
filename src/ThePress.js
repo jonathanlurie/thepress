@@ -67,13 +67,18 @@ class ThePress extends EventManager{
       that._builder.buildArticle(articleId)
     })
 
+    this._routeManager.on('specificTag', function(tag){
+      console.log('GOTO tag: ' + tag)
+      that._builder.buildArticleListPerTag(tag)
+    })
+
     this._routeManager.on('specificPage', function(pageId){
       console.log('GOTO page: ' + pageId)
       try {
         that._builder.buildPage(pageId)
       } catch(e){
         console.error(`The page ${pageId} does not exist, redirecting to home.`)
-        that._routeManager.goTo('about')
+        that._routeManager.goTo('')
       }
     })
   }
