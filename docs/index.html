@@ -1,8 +1,29 @@
 <html>
 <head>
   <title>The Press</title>
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
 
+  <!-- Generic meta -->
+  <meta name="description" content="A static website non-generator with no install step.">
+  <meta name="keywords" content="site-generator,JavaScript">
+  <meta name="author" content="Jonathan Lurie">
+
+  <!-- Facebook meta -->
+  <meta name="og:title" content="The Press"/>
+  <meta name="og:type" content="blog"/>
+  <meta name="og:image" content="http://me.jonathanlurie.fr/thepress/assets/logo-large.png"/>
+  <meta name="og:site_name" content="The Press"/>
+  <meta name="og:description" content="A static website non-generator with no install step."/>
+
+  <!-- Twitter meta -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@jonathanlurie" />
+  <meta name="twitter:title" content="The Press" />
+  <meta name="twitter:description" content="A static website non-generator with no install step." />
+  <meta name="twitter:image" content="http://me.jonathanlurie.fr/thepress/assets/logo-large.png" />
+
+  <!-- Some style import -->
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700|Roboto:300,400" rel="stylesheet">
   <link href="highlight-styles/default.css" rel="stylesheet">
 
@@ -365,6 +386,10 @@
   }
 
   @media screen and (max-width: 1000px) {
+    #header-logo {
+      width: 140px;
+    }
+
     #footer * {
       font-size: large;
     }
@@ -403,7 +428,6 @@
           </div>
 
 
-
           <!-- The menu -->
           <div id="top-menu">
             <ul>
@@ -422,11 +446,10 @@
               {{/each}}
             </ul>
           </div>
-
         </div> <!-- header -->
 
-        {{#if article}}
 
+        {{#if article}}
           {{#if content.metadata.cover}}
             <div class="page-header">
               <div class="page-cover" style="background: url({{content.metadata.cover}}) no-repeat center center / cover;">
@@ -434,11 +457,9 @@
               <div class="page-title darker-bg">
                 <div class="the-title-text white-text">{{content.metadata.title}}</div>
               </div>
-
               <div class="article-meta">
                 {{content.metadata.author}} – {{content.metadata.date}}
               </div>
-
             </div>
           {{else}}
             <div class="page-header-nocover">
@@ -447,7 +468,6 @@
               </div>
             </div>
           {{/if}}
-
           <div class="content">
             {{{content.body}}}
           </div>
@@ -455,7 +475,6 @@
 
 
         {{#if page}}
-
           {{#if content.metadata.cover}}
             <div class="page-header">
               <div class="page-cover" style="background: url({{content.metadata.cover}}) no-repeat center center / cover;">
@@ -471,7 +490,6 @@
               </div>
             </div>
           {{/if}}
-
           <div class="content">
             {{{content.body}}}
           </div>
@@ -479,19 +497,16 @@
 
 
         {{#if list}}
-
           {{#if content.prev}}
             <div id="arrow-left">
               <a href="{{content.prev}}" title="page {{content.prevIndex}}"><img src="assets/arrow_l.png"/></a>
             </div>
           {{/if}}
-
           {{#if content.next}}
             <div id="arrow-right">
               <a href="{{content.next}}" title="page {{content.nextIndex }} "><img src="assets/arrow_r.png"/></a>
             </div>
           {{/if}}
-
           <div class="article-list">
           {{#each content.articlesMeta}}
             <div class="article-list-elem">
@@ -510,26 +525,20 @@
             </div>
           {{/each}}
           </div>
-
         {{/if}}
-
-
 
 
         {{#if tagList}}
-
           {{#if content.prev}}
             <div id="arrow-left">
               <a href="{{content.prev}}" title="page {{content.prevIndex}}"><img src="assets/arrow_l.png"/></a>
             </div>
           {{/if}}
-
           {{#if content.next}}
             <div id="arrow-right">
               <a href="{{content.next}}" title="page {{content.nextIndex }} "><img src="assets/arrow_r.png"/></a>
             </div>
           {{/if}}
-
           <div class="article-list">
           {{#each content.articlesMeta}}
             <div class="article-list-elem">
@@ -548,13 +557,10 @@
             </div>
           {{/each}}
           </div>
-
         {{/if}}
 
-
-
-
       </div> <!-- main -->
+
 
       <div id="footer">
         <div class="main-column  relative-positioner">
@@ -564,13 +570,11 @@
               <img src="{{site.logoAlternative}}"/>
               </a>
             </div>
-
             <div id="footer-text">
               {{site.title}},<br>
               {{site.subtitle}}<br><br>
               <a href="https://github.com/jonathanlurie/thepress">Fork it on GitHub.</a>
             </div>
-
             <div id="footer-menu">
               <ul>
                   <li><a href="#">Articles</a></li>

@@ -2,13 +2,13 @@
 
 Go to the [second article](#articles/the-second-article)
 
-Some stock image
+Some stock image  
 ![image](image01.jpg)
 
-Some other stock image
-![nothing special](image02.jpg)]
+Some other stock image  
+![nothing special](image02.jpg)
 
-A last stock image
+A last stock image  
 ![ all right ](image03.jpg)
 
 That's all.
