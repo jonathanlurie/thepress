@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === "production") {
       globals(),
       builtins(),
       terser(),
-      execute(`cp dist/* docs/js/`)
+      execute(`cp dist/* docs/js/; cp -r docs site; zip -r samples/site.zip site; rm -rf site`)
     ]
   })
 }
