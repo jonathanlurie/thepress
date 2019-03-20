@@ -1,5 +1,5 @@
 ## Start easily
-The best way get started is to [download](https://raw.githubusercontent.com/jonathanlurie/thepress/master/samples/site.zip) a copy of this website and modify it.  
+Have you had a look at the [introduction](#introduction)? Then, the best way get started is to [download](https://raw.githubusercontent.com/jonathanlurie/thepress/master/samples/site.zip) a copy of this website and modify it.  
 Once you uncompress the archive, you will see file that are mandatory for the *machinery* and file that are actual content.
 
 ## File structure
@@ -80,10 +80,10 @@ The file `config.json` is quite short and self explanatory, still, let's have a 
 {
   /* The page title */
   "title": "Introduction",
-  
+
   /* The cover, to store in the same folder. Can also be an absolute path starting with 'http://' or 'https://' */
   "cover": "intro-cover.jpg",
-  
+
   /* Do you want the menu to show a link to this page? */
   "showInMenu": true
 }
@@ -125,23 +125,23 @@ The file `config.json` is slightly longer than for the page:
 {
   /* The title of the article */
   "title": "Get started",
-  
+
   /* The author of this article, can be different from the main config author */
   "author": "Jonathan Lurie",
-  
+
   /* The date, in whichever format you feel like showing on your site */
   "date": "16 March 2019",
-  
+
   /* some tags, coma separated. Don`t bother with uppercase, they will be lowercased anyway*/
   /* Multiword tag must dash-separated, not space separated */
   "tags": "tutorial, howto",
-  
+
   /* A sentence of two about what you are going to share */
   "excerpt": "Setup everything and get ready to write content!",
-  
+
   /* The cover, to store in the same folder. Can also be an absolute path starting with 'http://' or 'https://' */
   "cover": "cover.jpg",
-  
+
   /* Whether or not it will show on your website */
   "published": true
 }
