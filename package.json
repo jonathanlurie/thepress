@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production rollup -c",
     "dev": "serve docs & NODE_ENV=development rollup -w -c",
+    "dev-no-server": "NODE_ENV=development rollup -c; rm docs/js/*; cp dist/* docs/js/",
     "doc": "documentation build src/index.js -o ./doc/ -f html; documentation build src/** -f md > documentation.md",
     "lint": "eslint src"
   },

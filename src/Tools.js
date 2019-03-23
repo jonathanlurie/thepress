@@ -119,4 +119,11 @@ function markdownReplaceImageURL (md, prefix) {
 }
 
 
-export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL, markdownReplaceImageURL }
+stripHtml(html)
+{
+   let tmp = document.createElement("DIV")
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || '';
+}
+
+export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL, markdownReplaceImageURL, stripHtml }

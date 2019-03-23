@@ -39535,6 +39535,12 @@
           metadata: article.getMetadata(),
           body: article.getHtmlContent()
         };
+        that._updatePageMetadata(
+          articleData.metadata.title,
+          articleData.metadata.cover,
+          articleData.metadata.author,
+          articleData.metadata.excerpt
+        );
         that._buildGenericPage(articleData, 'article');
       });
     }
@@ -39547,6 +39553,12 @@
           metadata: page.getMetadata(),
           body: page.getHtmlContent()
         };
+        that._updatePageMetadata(
+          pageData.metadata.title,
+          pageData.metadata.cover,
+          null, // pages are authorless, but this will use the site author
+          null, // pages dont have excerpt, the mainConfig subtitle will be used
+        );
         that._buildGenericPage(pageData, 'page');
       });
     }
@@ -39579,6 +39591,7 @@
           tag: tag,
           articlesMeta: articles.filter(a => a.hasTag(tag)).map(a => a.getMetadata())
         };
+
         that._buildGenericPage(listData, 'tagList');
       });
     }
@@ -39599,6 +39612,48 @@
       this.flushBody();
       // this.flushNonScript()
       document.body.innerHTML += htmlCorpus;
+    }
+
+
+    _updatePageMetadata(title, coverImage, author, excerpt) {
+      document.title = title;
+      this._setUniqueMeta("meta[property='og:title']", title);
+      this._setUniqueMeta("meta[name='twitter:title']", title);
+
+      let validCoverImage = '';
+      if(coverImage === undefined || coverImage === null || coverImage === ''){
+        validCoverImage = getMainConfig().site.cover;
+      } else {
+        validCoverImage = coverImage;
+      }
+      this._setUniqueMeta("meta[property='og:image']", validCoverImage);
+      this._setUniqueMeta("meta[name='twitter:image']", validCoverImage);
+
+      let validAuthor = '';
+      if(author === undefined || author === null || author === ''){
+        validAuthor = getMainConfig().site.author;
+      } else {
+        validAuthor = author;
+      }
+      this._setUniqueMeta("meta[name='author']", validAuthor);
+
+      let validExcerpt = '';
+      if(excerpt === undefined || excerpt === null || excerpt === ''){
+        validExcerpt = getMainConfig().site.subtitle;
+      } else {
+        validExcerpt = excerpt;
+      }
+      this._setUniqueMeta("meta[name='description']", validExcerpt);
+      this._setUniqueMeta("meta[property='og:description']", validExcerpt);
+      this._setUniqueMeta("meta[name='twitter:description']", validExcerpt);
+    }
+
+    _setUniqueMeta(qs, content) {
+      try {
+        document.querySelector(qs).setAttribute('content', content);
+      } catch(e){
+        console.warn(`Cannot update the querySelector "${qs}" with the value "${content}". Probably this markup does not exist.\n(original error message: ${e.message})`);
+      }
     }
 
 

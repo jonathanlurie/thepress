@@ -22,7 +22,9 @@ const configurations = [
       commonjs({ include: 'node_modules/**' }),
       globals(),
       builtins(),
-      execute(`cp dist/* docs/js/`)
+      //execute(`echo "BUILD FOR DEV"`),
+      //execute(`rm docs/js/*`),
+      //execute(`cp dist/* docs/js/`)
     ]
   },
 
