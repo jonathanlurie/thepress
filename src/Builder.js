@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars'
-import { getMainConfig, stripHtml } from './Config'
+import { getMainConfig } from './Config'
+import { stripHtml, firstWords } from './Tools'
 const TEMPLATE_ID = 'thepress-template'
 
 // to allow string comparison
@@ -116,7 +117,7 @@ class Builder {
         pageData.metadata.title,
         pageData.metadata.cover,
         null, // pages are authorless, but this will use the site author
-        stripHtml(page.getHtmlContent()), // pages dont have excerpt, the mainConfig subtitle will be used
+        firstWords(stripHtml(page.getHtmlContent())), // pages dont have excerpt, the mainConfig subtitle will be used
       )
       that._buildGenericPage(pageData, 'page')
     })
@@ -137,6 +138,13 @@ class Builder {
           next: ((pageIndex + 1) * getMainConfig().content.articlesPerPage) >= that._articleCollection.getNumberOfArticles() ? null : `#articles/page-${pageIndex + 1}`,
           articlesMeta: articles.map(a => a.getMetadata())
         }
+
+        that._updatePageMetadata(
+          null,
+          null,
+          null,
+          null,
+        )
         that._buildGenericPage(listData, 'list')
       }
     )
@@ -151,6 +159,12 @@ class Builder {
         articlesMeta: articles.filter(a => a.hasTag(tag)).map(a => a.getMetadata())
       }
 
+      that._updatePageMetadata(
+        tag,
+        null,
+        null,
+        `All the articles on ${getMainConfig().site.title} about ${tag}`,
+      )
       that._buildGenericPage(listData, 'tagList')
     })
   }
@@ -175,9 +189,15 @@ class Builder {
 
 
   _updatePageMetadata(title, coverImage, author, excerpt) {
-    document.title = title
-    this._setUniqueMeta("meta[property='og:title']", title)
-    this._setUniqueMeta("meta[name='twitter:title']", title)
+    let validTitle = ''
+    if(title === undefined || title === null || title === ''){
+      validTitle = getMainConfig().site.title
+    } else {
+      validTitle = title
+    }
+    document.title = validTitle
+    this._setUniqueMeta("meta[property='og:title']", validTitle)
+    this._setUniqueMeta("meta[name='twitter:title']", validTitle)
 
     let validCoverImage = ''
     if(coverImage === undefined || coverImage === null || coverImage === ''){

@@ -119,11 +119,24 @@ function markdownReplaceImageURL (md, prefix) {
 }
 
 
-stripHtml(html)
+function stripHtml(html)
 {
    let tmp = document.createElement("DIV")
    tmp.innerHTML = html;
    return tmp.textContent || tmp.innerText || '';
 }
 
-export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL, markdownReplaceImageURL, stripHtml }
+
+/**
+ * Extract the first N letter of a given string, but does not cut words.
+ * @param {string} str - the string to make shorter
+ * @param {number} n - the number of letter to extract
+ * @param {string} suffix - a suffix to add
+ * @return {string} the result
+ */
+ function firstWords(str, n=150, suffix=' ...') {
+   let short = str.slice(0, n)
+   return (str.length > n ? short.slice(0, short.lastIndexOf(' ')) : short) + suffix
+ }
+
+export { fetchJson, fetchText, pathJoin, getURL, getAbsoluteURL, markdownReplaceImageURL, stripHtml, firstWords }

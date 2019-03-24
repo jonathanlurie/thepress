@@ -161,6 +161,27 @@
     return mdMod
   }
 
+
+  function stripHtml(html)
+  {
+     let tmp = document.createElement("DIV");
+     tmp.innerHTML = html;
+     return tmp.textContent || tmp.innerText || '';
+  }
+
+
+  /**
+   * Extract the first N letter of a given string, but does not cut words.
+   * @param {string} str - the string to make shorter
+   * @param {number} n - the number of letter to extract
+   * @param {string} suffix - a suffix to add
+   * @return {string} the result
+   */
+   function firstWords(str, n=150, suffix=' ...') {
+     let short = str.slice(0, n);
+     return (str.length > n ? short.slice(0, short.lastIndexOf(' ')) : short) + suffix
+   }
+
   let mainConfig = null;
 
   function setMainConfig (data) {
@@ -39557,7 +39578,7 @@
           pageData.metadata.title,
           pageData.metadata.cover,
           null, // pages are authorless, but this will use the site author
-          null, // pages dont have excerpt, the mainConfig subtitle will be used
+          firstWords(stripHtml(page.getHtmlContent())), // pages dont have excerpt, the mainConfig subtitle will be used
         );
         that._buildGenericPage(pageData, 'page');
       });
@@ -39578,6 +39599,13 @@
             next: ((pageIndex + 1) * getMainConfig().content.articlesPerPage) >= that._articleCollection.getNumberOfArticles() ? null : `#articles/page-${pageIndex + 1}`,
             articlesMeta: articles.map(a => a.getMetadata())
           };
+
+          that._updatePageMetadata(
+            null,
+            null,
+            null,
+            null,
+          );
           that._buildGenericPage(listData, 'list');
         }
       );
@@ -39592,6 +39620,12 @@
           articlesMeta: articles.filter(a => a.hasTag(tag)).map(a => a.getMetadata())
         };
 
+        that._updatePageMetadata(
+          tag,
+          null,
+          null,
+          `All the articles on ${getMainConfig().site.title} about ${tag}`,
+        );
         that._buildGenericPage(listData, 'tagList');
       });
     }
@@ -39616,9 +39650,15 @@
 
 
     _updatePageMetadata(title, coverImage, author, excerpt) {
-      document.title = title;
-      this._setUniqueMeta("meta[property='og:title']", title);
-      this._setUniqueMeta("meta[name='twitter:title']", title);
+      let validTitle = '';
+      if(title === undefined || title === null || title === ''){
+        validTitle = getMainConfig().site.title;
+      } else {
+        validTitle = title;
+      }
+      document.title = validTitle;
+      this._setUniqueMeta("meta[property='og:title']", validTitle);
+      this._setUniqueMeta("meta[name='twitter:title']", validTitle);
 
       let validCoverImage = '';
       if(coverImage === undefined || coverImage === null || coverImage === ''){
